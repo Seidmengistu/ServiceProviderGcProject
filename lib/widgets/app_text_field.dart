@@ -5,18 +5,17 @@ class AppTextField extends StatelessWidget {
   final TextEditingController textController;
   final String hintText;
   final IconData icon;
-  final  autofocus;
+  final autofocus;
   //  final?l TextInputType tx;
 
-  const AppTextField(
-      {Key? key,
-      required this.hintText,
-      required this.icon,
-      required this.textController, 
-      this.autofocus,
-      // this.tx,
-      })
-      : super(key: key);
+  const AppTextField({
+    Key? key,
+    required this.hintText,
+    required this.icon,
+    required this.textController,
+    this.autofocus,
+    // this.tx,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,7 @@ class AppTextField extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.2))
           ]),
       child: TextField(
-        
+        // style: TextStyle(fontFamily: "TiroKannada"),
         controller: textController,
         decoration: InputDecoration(
             hintText: hintText,

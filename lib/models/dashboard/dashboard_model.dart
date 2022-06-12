@@ -2,13 +2,13 @@ class DashboardModel {
   String rate;
   int? totalBooking;
   int? todayTotalBooking;
-  double? totalBalance;
+  double totalBalance;
 
   DashboardModel(
       {required this.rate,
       this.totalBooking,
       this.todayTotalBooking,
-      this.totalBalance});
+      required this.totalBalance});
 
   factory DashboardModel.fromJson(Map<String, dynamic> json) {
     return DashboardModel(
@@ -16,6 +16,10 @@ class DashboardModel {
       todayTotalBooking: json['today_total_booking'],
       totalBooking: json['total_booking'],
       totalBalance: json['total_balance'],
+
+      // json['total_balance'] == null
+      //       ? 0.0
+      //       : json['total_balance'].toDouble());
     );
   }
 }

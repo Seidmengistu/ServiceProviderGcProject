@@ -67,8 +67,17 @@ class ApiClient extends GetConnect implements GetxService {
 
 //to get Review Data
 
-Future<Response> getReviewData(String uri) async {
-  print("review repo");
+  Future<Response> getReviewData(String uri) async {
+    try {
+      Response response = await get(uri, headers: _mainHeaders);
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, statusText: e.toString());
+    }
+  }
+
+  //TODAY All Bokking List
+  Future<Response> getTodayALLBookingData(String uri) async {
     try {
       Response response = await get(uri, headers: _mainHeaders);
       return response;
@@ -79,4 +88,58 @@ Future<Response> getReviewData(String uri) async {
 
 
 
+ //TODAY tO bE DONE bOOKING
+  Future<Response> getTodayToBeDoneBookingData(String uri) async {
+    try {
+      Response response = await get(uri, headers: _mainHeaders);
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, statusText: e.toString());
+    }
+  }
+
+//TODAY Copmpleted Booking
+  Future<Response> getTodayCompletedBookingData(String uri) async {
+    try {
+      Response response = await get(uri, headers: _mainHeaders);
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, statusText: e.toString());
+    }
+  }
+
+  //General All Bokking List
+  Future<Response> getGeneralALLBookingData(String uri) async {
+    try {
+      Response response = await get(uri, headers: _mainHeaders);
+
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, statusText: e.toString());
+    }
+  }
+
+// To General to be done booking
+
+  Future<Response> getGeneralToBeDoneBookingData(String uri) async {
+    try {
+      Response response = await get(uri, headers: _mainHeaders);
+
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, statusText: e.toString());
+    }
+  }
+
+// To General Completed Booking
+
+  Future<Response> getGeneralCompletedBookingData(String uri) async {
+    try {
+      Response response = await get(uri, headers: _mainHeaders);
+
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, statusText: e.toString());
+    }
+  }
 }

@@ -15,7 +15,7 @@ class _ExpandableTextWidgetState extends State<ExpandableTextWidget> {
   late String secondHalf;
 
   bool hiddenText = true; // intially for lon text we use this
-  double textHeight = Dimensions.screenHeight / 5.6;
+  double textHeight = Dimensions.screenHeight / 5;
   @override
 // =firstHalf=i love flutter laravel and golang 30 ,secondHalf=20   total 50 length
   void initState() {
@@ -70,7 +70,6 @@ class _ExpandableTextWidgetState extends State<ExpandableTextWidget> {
                         hiddenText
                             ? Icons.arrow_drop_down
                             : Icons.arrow_drop_up,
-                            
                       ),
                     ],
                   ),

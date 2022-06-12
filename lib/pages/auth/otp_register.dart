@@ -56,7 +56,6 @@ class _RegisterState extends State<Register> {
           CheckPhoneNumberBody(phone: phone);
 
       authController.otpCheckPhone(checkPhoneNumberBody).then((status) {
-        
         if (status.isExist!) {
           SendCodeBody sendCodeBody = SendCodeBody(phone: phone);
           authController.sendCode(sendCodeBody).then((responseModel) {
@@ -64,13 +63,13 @@ class _RegisterState extends State<Register> {
               EasyLoading.dismiss();
               Get.to(() => Otp(), arguments: phone);
             } else {
-               EasyLoading.dismiss();
+              EasyLoading.dismiss();
               showCustomSnackBar("Some thing wrong please tray again");
             }
           });
         } else {
           EasyLoading.dismiss();
-          Get.to(() => SignupPage());
+          Get.to(() => SignupPage(), arguments: phone);
         }
       });
     }

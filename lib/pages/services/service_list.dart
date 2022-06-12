@@ -1,20 +1,17 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:service_provider/controllers/dashboard/dashboard_controller.dart';
+
 import 'package:service_provider/controllers/service/popular_service_controller.dart';
-import 'package:service_provider/main.dart';
+
 import 'package:service_provider/models/service/service_model.dart';
-import 'package:service_provider/pages/services/home_page.dart';
-import 'package:service_provider/pages/services/main_service_page.dart';
-import 'package:service_provider/pages/services/popular_service_detail.dart';
+
 import 'package:service_provider/routes/route_helper.dart';
 
 import 'package:service_provider/utils/app_constants.dart';
 import 'package:service_provider/utils/dimensions.dart';
 import 'package:service_provider/widgets/app_column.dart';
-import 'package:service_provider/widgets/big_text.dart';
-import 'package:service_provider/widgets/icon_and_text_widget.dart';
-import 'package:service_provider/widgets/small_text.dart';
 
 import 'package:get/get.dart';
 
@@ -58,6 +55,8 @@ class _ServiceListBodyState extends State<ServiceList> {
   Widget build(BuildContext context) {
     var controller = Get.find<PopularServiceController>();
     controller.getPopularServiceList();
+    // var _controller = Get.find<DashboardController>();
+    Get.find<PopularServiceController>().getPopularServiceList();
     return Column(
       children: [
         //Slider Section
@@ -103,141 +102,95 @@ class _ServiceListBodyState extends State<ServiceList> {
         SizedBox(
           height: Dimensions.height30,
         ),
-        Container(
-          margin: EdgeInsets.only(left: Dimensions.width30),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              BigText(text: "Popular Services"),
-              SizedBox(
-                width: Dimensions.width10,
-              ), //space before the dot
 
-              SizedBox(
-                width: Dimensions.width10,
-              ), //space after the dot
-            ],
-          ),
-        ),
         // recomended food
         //list of food and images
         // GetBuilder<RecomendedProductController>(builder: (recomendedProducts) {
         //   return recomendedProducts.isLoaded
         //       ?
-        ListView.builder(
-            physics:
-                NeverScrollableScrollPhysics(), //the whole page is scrollable but using alwaysscrolla
-            shrinkWrap: true,
-            itemCount: 2,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  // Get.toNamed(RouteHelper.getRecomendedFood(index));
-                },
-                child: Container(
-                  margin: EdgeInsets.only(
-                      left: Dimensions.width20,
-                      right: Dimensions.width20,
-                      bottom: Dimensions.height10),
-                  child: Row(
-                    children: [
-                      //image section
-                      GestureDetector(
-                        onTap: () {
-                          // RouteHelper.recomendedFood;
-                        },
-                        child: Container(
-                          width: Dimensions.ListViewImgSize,
-                          height: Dimensions.ListViewImgSize,
+
+        GridView.builder(
+          shrinkWrap: true,
+          itemCount: controller.popularServiceList.length,
+          physics: ScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, crossAxisSpacing: 1.0, mainAxisSpacing: 1.0),
+          itemBuilder: (BuildContext context, int index) {
+            return GetBuilder<PopularServiceController>(
+                builder: (popularServices) {
+              return popularServices.isLoad
+                  ? Column(
+                      children: [
+                        Container(
+                          height: Dimensions.height50 * 4,
+                          width: Dimensions.height50 *
+                              4, //it use this height instead of the parent 320
+                          margin: EdgeInsets.only(
+                              left: Dimensions.width10,
+                              right: Dimensions.width10), //space between images
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(Dimensions.radius20),
-                            color: Colors.white38,
-                            // image: DecorationImage(
-                            //   fit: BoxFit.cover,
-                            //   // image: AssetImage(
-
-                            //   //   // AppConstants.BASE_URL +
-                            //   //   //   AppConstants.UPLOAD_URL +
-                            //   //   //    recomendedProducts
-                            //   //   //        .recomendedProductList[index].img
-
-                            //   //         ),
-                            // ),
+                              color: Colors.white,
+                              borderRadius:
+                                  BorderRadius.circular(Dimensions.radius30),
+                              boxShadow: [
+                                BoxShadow(
+                                    blurRadius: 18,
+                                    spreadRadius: 7,
+                                    offset: Offset(1, 10),
+                                    color: Colors.grey.withOpacity(0.2))
+                              ]),
+                          child: Column(
+                            children: [
+                              Container(
+                                padding:
+                                    EdgeInsets.only(top: Dimensions.height10),
+                                child: CircleAvatar(
+                                  maxRadius: Dimensions.height50,
+                                  backgroundImage: NetworkImage(
+                                      AppConstants.BASE_URL +
+                                          AppConstants.UPLOAD_URL +
+                                          popularServices
+                                              .popularServiceList[index]
+                                              .image!),
+                                ),
+                              ),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              RatingBar.builder(
+                                ignoreGestures: true,
+                                itemSize: Dimensions.font20,
+                                initialRating: 1,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: 0.0),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                onRatingUpdate: (rating) {},
+                              ),
+                              SizedBox(
+                                height: Dimensions.height15,
+                              ),
+                              Text(
+                                popularServices.popularServiceList[index].name!,
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      //TExT container
-
-                      Expanded(
-                        // to allow the width to take all the available width
-
-                        child: Container(
-                          height: Dimensions.ListViewTextSize,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(Dimensions.radius20),
-                              bottomRight: Radius.circular(Dimensions.radius20),
-                            ),
-                            color: Colors.white,
-
-                            // boxShadow: BoxShadow()
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.only(left: Dimensions.width10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                BigText(text: "service Name"
-                                    // recomendedProducts
-                                    //     .recomendedProductList[index]
-                                    //     .name!
-                                    ),
-                                SizedBox(
-                                  height: Dimensions.height10,
-                                ),
-                                SmallText(text: ""),
-                                SizedBox(
-                                  height: Dimensions.height10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    IconAndTextWidget(
-                                      icon: Icons.rate_review_rounded,
-                                      text: "Rating",
-                                      iconColor: Colors.orangeAccent,
-                                    ),
-                                    SizedBox(
-                                      width: Dimensions.width20,
-                                    ),
-                                    IconAndTextWidget(
-                                      icon: Icons.location_on,
-                                      text: "1.7 km",
-                                      iconColor: Colors.lightBlue,
-                                    ),
-                                    SizedBox(
-                                      width: Dimensions.width20,
-                                    ),
-                                    IconAndTextWidget(
-                                      icon: Icons.access_time_rounded,
-                                      text: "32 smin",
-                                      iconColor: Colors.red,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              );
-            })
+                      ],
+                    )
+                  : CircularProgressIndicator(
+                      color: Colors.blue,
+                      backgroundColor: Colors.green,
+                    );
+            });
+          },
+        ),
       ],
     );
   }

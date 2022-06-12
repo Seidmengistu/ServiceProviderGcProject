@@ -27,6 +27,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:service_provider/widgets/res/assets.dart';
 import 'package:service_provider/widgets/res/network_image.dart';
 
+//159|QOk8caiwBN4rVNgfylLGuk0oxi0ULYzZ9pFMDcja
 class PopularServiceDetail extends StatefulWidget {
   final int pageId;
   const PopularServiceDetail({Key? key, required this.pageId})
@@ -42,6 +43,7 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
   @override
   Widget build(BuildContext context) {
     controller.getPopularServiceList();
+    Get.find<PopularServiceController>().getPopularServiceList();
     //to get page id
     var service =
         Get.find<PopularServiceController>().popularServiceList[widget.pageId];
@@ -209,9 +211,9 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
                             children: [
                               Column(
                                 children: [
-                                  SizedBox(
-                                    width: Dimensions.width30,
-                                  ),
+                                  // SizedBox(
+                                  //   width: Dimensions.width30,
+                                  // ),
                                   SizedBox(
                                     height: Dimensions.height30,
                                   ),
@@ -245,7 +247,7 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
                               Column(
                                 children: [
                                   SizedBox(
-                                    height: Dimensions.height30 - 10,
+                                    height: Dimensions.height30,
                                   ),
                                   FloatingActionButton.extended(
                                     heroTag: "btn2",

@@ -1,15 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:service_provider/base/custom_loader.dart';
+import 'package:service_provider/controllers/booking/booking_controller.dart';
+import 'package:service_provider/controllers/profile/profile_controller.dart';
 import 'package:service_provider/controllers/review/review_controller.dart';
-import 'package:service_provider/controllers/service/popular_service_controller.dart';
-import 'package:service_provider/routes/route_helper.dart';
+import 'package:service_provider/models/booking/booking_model.dart';
 import 'package:service_provider/utils/app_constants.dart';
 import 'package:service_provider/utils/dimensions.dart';
+import 'package:service_provider/widgets/app_icon.dart';
 import 'package:service_provider/widgets/big_text.dart';
-import 'package:service_provider/widgets/icon_and_text_widget.dart';
-import 'package:service_provider/widgets/small_text.dart';
+import 'package:service_provider/widgets/expandable_text_widget.dart';
+import 'package:service_provider/widgets/res/assets.dart';
 
 class ReportList extends StatefulWidget {
   const ReportList({Key? key}) : super(key: key);
@@ -19,13 +24,17 @@ class ReportList extends StatefulWidget {
 
 class _ReportListState extends State<ReportList> {
   @override
+  final String avatar = avatars[0];
   Widget build(BuildContext context) {
     Get.find<ReviewController>().getReviewList();
+
+    final _profileInfo = Get.find<ProfileController>();
+    final f = new DateFormat.yMd();
 
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: Colors.blue[300],
+        backgroundColor: Colors.white,
         appBar: AppBar(
           toolbarHeight: Dimensions.height50 + 70,
           // centerTitle: true,
@@ -51,7 +60,7 @@ class _ReportListState extends State<ReportList> {
                       text: 'Payment',
                     ),
                     Tab(
-                      text: 'Withdraw Reqest',
+                      text: 'Withdraw Request',
                     ),
                   ],
                 ),
@@ -60,179 +69,264 @@ class _ReportListState extends State<ReportList> {
           ),
         ),
         body: Container(
+          //    Wrap(
+          // children: <Widget>Column);
           child: TabBarView(
             children: [
-              Center(
-                  child: Container(
-                child: ListView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(left: 40.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          SizedBox(
-                            width: Dimensions.width50,
-                          ),
-                          // AppTextField(
-                          //   hintText: "Search Booking",
-                          //   icon: Icons.add,
-                          //   textController: searchController,
-                          // ),
-                          // TextField(),
-                          SizedBox(
-                            width: Dimensions.width50 + 55,
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.search),
-                            color: Colors.white,
-                            onPressed: () {},
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: Dimensions.height10 / 2),
-                    Container(
-                      height: MediaQuery.of(context).size.height - 185.0,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(Dimensions.radius30),
-                          topRight: Radius.circular(Dimensions.radius30),
+              Container(
+                padding: EdgeInsets.only(top: Dimensions.height20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GetBuilder<ReviewController>(builder: (reviewList) {
+                      return Container(
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: Dimensions.radius30 * 2,
+                              backgroundImage: NetworkImage(AppConstants
+                                      .BASE_URL +
+                                  AppConstants.UPLOAD_URL +
+                                  _profileInfo.profileInfo[0].logo.toString()),
+                            ),
+                            SizedBox(
+                              height: Dimensions.height15,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                RatingBar.builder(
+                                  ignoreGestures: true,
+                                  itemSize: Dimensions.font26,
+                                  initialRating: double.tryParse(
+                                          reviewList.reviewList[0].rate)!
+                                      .toDouble(),
+                                  minRating: 1,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  itemCount: 5,
+                                  itemPadding:
+                                      EdgeInsets.symmetric(horizontal: 0.0),
+                                  itemBuilder: (context, _) => Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  onRatingUpdate: (rating) {},
+                                ),
+                                SizedBox(
+                                  width: Dimensions.width15,
+                                ),
+                                Text(
+                                  reviewList.reviewList[0].rate + " " + "/ 5",
+                                  style: TextStyle(
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Dimensions.font16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
-                      child:
-                          GetBuilder<ReviewController>(builder: (reviewList) {
-                        return !reviewList.isLoad
-                            ? ListView.builder(
-                                physics:
-                                    AlwaysScrollableScrollPhysics(), //the whole page is scrollable but using alwaysscrolla
-                                shrinkWrap: true,
-                                itemCount: reviewList.reviewList.length,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      // Get.toNamed(RouteHelper.getRecomendedFood(index));
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.only(
-                                          top: Dimensions.height50,
-                                          left: Dimensions.width20,
-                                          right: Dimensions.width20,
-                                          bottom: Dimensions.height10),
-                                      child: Row(
-                                        children: [
-                                          //image section
-                                          GestureDetector(
-                                            onTap: () {
-                                              Get.toNamed(
-                                                  RouteHelper.getPopularService(
-                                                      index));
-                                            },
-                                            child: Container(
-                                              width: Dimensions.ListViewImgSize,
-                                              height:
-                                                  Dimensions.ListViewImgSize,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        Dimensions.radius20),
-                                                color: Colors.grey,
-                                                // image: DecorationImage(
-                                                //   fit: BoxFit.cover,
-                                                //   // image: NetworkImage(AppConstants
-                                                //   //         .BASE_URL +
-                                                //   //     AppConstants.UPLOAD_URL +
-                                                //   //     popularServices
-                                                //   //         .popularServiceList[
-                                                //   //             index]
-                                                //   //         .image),
-                                                // ),
-                                              ),
-                                            ),
-                                          ),
-                                          //TExT container
-
-                                          Expanded(
-                                            // to allow the width to take all the available width
-
-                                            child: Container(
-                                              height:
-                                                  Dimensions.ListViewTextSize,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          Dimensions.radius20),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                        blurRadius: 10,
-                                                        spreadRadius: 7,
-                                                        offset: Offset(1, 5),
-                                                        color: Colors.blue
-                                                            .withOpacity(0.2))
-                                                  ]),
-                                              child: Padding(
+                      );
+                    }),
+                    SizedBox(
+                      height: Dimensions.height15,
+                    ),
+                    Container(
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              showMaterialModalBottomSheet(
+                                context: context,
+                                backgroundColor: Colors.white,
+                                elevation: 4,
+                                builder: (context) => Container(
+                                  height: MediaQuery.of(context).size.height -
+                                      180.0,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.radius30),
+                                  ),
+                                  child: GetBuilder<ReviewController>(
+                                      builder: (reviewList) {
+                                    return reviewList.isLoad
+                                        ? ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount:
+                                                reviewList.reviewList.length,
+                                            itemBuilder: (context, index) {
+                                              return Container(
+                                                color: Colors.white,
+                                                margin: EdgeInsets.only(
+                                                  top: Dimensions.height10,
+                                                  left: Dimensions.width20,
+                                                  right: Dimensions.width20,
+                                                ),
                                                 padding: EdgeInsets.only(
-                                                    left: Dimensions.width10),
-                                                child: Column(
+                                                    top: Dimensions.height15),
+                                                child: Row(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
                                                   children: [
-                                                    BigText(
-                                                      text: reviewList
-                                                          .reviewList[index]
-                                                          .review,
+                                                    Container(
+                                                      padding: EdgeInsets.only(
+                                                          top: Dimensions
+                                                              .height15),
+                                                      child: CircleAvatar(
+                                                        maxRadius:
+                                                            Dimensions.radius30,
+                                                        backgroundImage:
+                                                            NetworkImage(AppConstants
+                                                                    .BASE_URL +
+                                                                AppConstants
+                                                                    .UPLOAD_URL +
+                                                                reviewList
+                                                                    .reviewList[
+                                                                        index]
+                                                                    .user
+                                                                    .profilePicture),
+                                                      ),
                                                     ),
-                                                    SizedBox(
-                                                      height:
-                                                          Dimensions.height10,
-                                                    ),
-                                                    SmallText(text: ""),
-                                                    SizedBox(
-                                                      height:
-                                                          Dimensions.height10,
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        IconAndTextWidget(
-                                                          icon: Icons
-                                                              .calendar_today_rounded,
-                                                          text: reviewList
-                                                              .reviewList[index]
-                                                              .rate,
-                                                          iconColor:
-                                                              Colors.blue,
-                                                        ),
-                                                      ],
+                                                    Expanded(
+                                                      child: Wrap(
+                                                        children: [
+                                                          Container(
+                                                            color: Colors.white,
+                                                            child: Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .only(
+                                                                left: Dimensions
+                                                                    .height10,
+                                                              ),
+                                                              child: Wrap(
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      BigText(
+                                                                        text: reviewList
+                                                                            .reviewList[index]
+                                                                            .user
+                                                                            .name
+                                                                            .toString(),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: Dimensions
+                                                                            .width30,
+                                                                      ),
+                                                                      RatingBar
+                                                                          .builder(
+                                                                        ignoreGestures:
+                                                                            true,
+                                                                        itemSize:
+                                                                            Dimensions.font26,
+                                                                        initialRating:
+                                                                            double.tryParse(reviewList.reviewList[index].rate)!.toDouble(),
+                                                                        minRating:
+                                                                            1,
+                                                                        direction:
+                                                                            Axis.horizontal,
+                                                                        allowHalfRating:
+                                                                            true,
+                                                                        itemCount:
+                                                                            5,
+                                                                        itemPadding:
+                                                                            EdgeInsets.symmetric(horizontal: 0.0),
+                                                                        itemBuilder:
+                                                                            (context, _) =>
+                                                                                Icon(
+                                                                          Icons
+                                                                              .star,
+                                                                          color:
+                                                                              Colors.amber,
+                                                                        ),
+                                                                        onRatingUpdate:
+                                                                            (rating) {},
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: Dimensions
+                                                                        .width30,
+                                                                  ),
+                                                                  Text(
+                                                                    f
+                                                                        .format(reviewList
+                                                                            .reviewList[index]
+                                                                            .createdAt)
+                                                                        .toString(),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: Dimensions
+                                                                        .width30,
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child:
+                                                                            Text(
+                                                                          reviewList
+                                                                              .reviewList[index]
+                                                                              .review,
+                                                                          style:
+                                                                              TextStyle(overflow: TextOverflow.fade),
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                })
-                            : CustomLoader(
-                                key: Key("Loading..."),
+                                              );
+                                            })
+                                        : CustomLoader(
+                                            key: Key("Loading..."),
+                                          );
+                                  }),
+                                ),
                               );
-                      }),
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.align_horizontal_left,
+                                  size: Dimensions.height30,
+                                  color: Colors.blue,
+                                ),
+                                SizedBox(
+                                  width: Dimensions.width20,
+                                ),
+                                Text(
+                                  "See All Reviews",
+                                  style: TextStyle(
+                                      fontFamily: 'TiroKannada',
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.amber[800],
+                                      fontSize: Dimensions.font16 + 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: Dimensions.height50 * 2,
+                          ),
+                          Text("Popular Comments Here"),
+                        ],
+                      ),
                     )
                   ],
                 ),
-              )),
-              Center(
-                child: Text('Status Page'),
               ),
+              paymetMethod(),
               Center(
                 child: Text('Calls Page'),
               ),
@@ -242,4 +336,321 @@ class _ReportListState extends State<ReportList> {
       ),
     );
   }
+}
+
+paymetMethod() {
+  final f = new DateFormat.yMd();
+  return DefaultTabController(
+    length: 2,
+    child: Container(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          bottom: PreferredSize(
+            preferredSize: new Size.fromHeight(20),
+            child: Container(
+              child: TabBar(
+                isScrollable: true,
+                indicatorWeight: 3.0,
+                indicatorColor: Colors.blue[200],
+                unselectedLabelColor: Colors.black,
+                labelPadding: EdgeInsets.only(
+                    left: Dimensions.width50 + 20,
+                    right: Dimensions.width50 + 30,
+                    top: Dimensions.height10,
+                    bottom: Dimensions.height10),
+                tabs: <Widget>[
+                  Tab(
+                    // icon: Icon(
+                    //   Icons.today,
+                    //   color: Colors.green,
+                    // ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(Dimensions.radius30),
+                          boxShadow: [
+                            BoxShadow(
+                                blurRadius: 3,
+                                spreadRadius: 7,
+                                offset: Offset(1, 10),
+                                color: Colors.white.withOpacity(0.2))
+                          ]),
+                      child: Text(
+                        'Add Payment',
+                        style: TextStyle(
+                            color: Colors.black, fontSize: Dimensions.radius20),
+                      ),
+                    ),
+                  ),
+                  Tab(
+                    // icon: Icon(
+                    //   Icons.assessment,
+                    //   color: Colors.green,
+                    // ),
+                    child: Text(
+                      'Edit Payment',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        body: TabBarView(
+          children: <Widget>[
+            Container(
+              height: 500,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(Dimensions.radius30),
+                  topRight: Radius.circular(Dimensions.radius30),
+                ),
+              ),
+              child: GetBuilder<BookingController>(builder: (todayAll) {
+                return todayAll.isLoad
+                    ? ListView.builder(
+                        physics:
+                            AlwaysScrollableScrollPhysics(), //the whole page is scrollable but using alwaysscrolla
+                        shrinkWrap: true,
+                        itemCount: todayAll.todayAllBookingList.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              // Get.toNamed(RouteHelper.getRecomendedFood(index));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  top: Dimensions.height50,
+                                  left: Dimensions.width20,
+                                  right: Dimensions.width20,
+                                  bottom: Dimensions.height10),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: Dimensions.radius30 * 2,
+                                    backgroundImage: NetworkImage(todayAll
+                                        .todayAllBookingList[index]
+                                        .user
+                                        .profilePicture),
+                                  ),
+                                  Expanded(
+                                    // to allow the width to take all the available width
+
+                                    child: Container(
+                                      height: Dimensions.ListViewTextSize,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: Dimensions.width10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            BigText(
+                                              text: todayAll
+                                                  .todayAllBookingList[index]
+                                                  .user
+                                                  .name,
+                                            ),
+                                            SizedBox(
+                                              height: Dimensions.height10,
+                                            ),
+                                            Container(
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "Service Type : ",
+                                                    style: TextStyle(
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: Dimensions.width20,
+                                                  ),
+                                                  Text(
+                                                    todayAll
+                                                        .todayAllBookingList[
+                                                            index]
+                                                        .service
+                                                        .name,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: Dimensions.height10,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Icon(
+                                                  Icons.calendar_today_rounded,
+                                                  color: Colors.blue,
+                                                  size: Dimensions.font16,
+                                                ),
+                                                SizedBox(
+                                                    width: Dimensions.width10),
+                                                Text(f.format(todayAll
+                                                    .todayAllBookingList[index]
+                                                    .user
+                                                    .createdAt))
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        })
+                    : CustomLoader();
+              }),
+            ),
+            Container(
+              height: 500,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(Dimensions.radius30),
+                  topRight: Radius.circular(Dimensions.radius30),
+                ),
+              ),
+              child: GetBuilder<BookingController>(builder: (todayToBeDone) {
+                return todayToBeDone.isLoad
+                    ? ListView.builder(
+                        physics:
+                            AlwaysScrollableScrollPhysics(), //the whole page is scrollable but using alwaysscrolla
+                        shrinkWrap: true,
+                        itemCount:
+                            todayToBeDone.todayToBeDoneBookingList.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              // Get.toNamed(RouteHelper.getRecomendedFood(index));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  top: Dimensions.height50,
+                                  left: Dimensions.width20,
+                                  right: Dimensions.width20,
+                                  bottom: Dimensions.height10),
+                              child: Row(
+                                children: [
+                                  //image section
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Get.toNamed(
+                                      //     RouteHelper.getPopularService(
+                                      //         index));
+                                    },
+                                    child: CircleAvatar(
+                                      radius: Dimensions.radius30 * 2,
+                                      backgroundImage: NetworkImage(
+                                          todayToBeDone
+                                              .todayToBeDoneBookingList[index]
+                                              .user
+                                              .profilePicture),
+                                    ),
+                                  ),
+                                  //TExT container
+
+                                  Expanded(
+                                    // to ToBeDoneow the width to take ToBeDone the available width
+
+                                    child: Container(
+                                      height: Dimensions.ListViewTextSize,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: Dimensions.width10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            BigText(
+                                              text: todayToBeDone
+                                                  .todayToBeDoneBookingList[
+                                                      index]
+                                                  .user
+                                                  .name,
+                                            ),
+                                            SizedBox(
+                                              height: Dimensions.height10,
+                                            ),
+                                            Container(
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "Service Type : ",
+                                                    style: TextStyle(
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: Dimensions.width20,
+                                                  ),
+                                                  Text(
+                                                    todayToBeDone
+                                                        .todayToBeDoneBookingList[
+                                                            index]
+                                                        .service
+                                                        .name,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: Dimensions.height10,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Icon(
+                                                  Icons.calendar_today_rounded,
+                                                  color: Colors.blue,
+                                                  size: Dimensions.font16,
+                                                ),
+                                                SizedBox(
+                                                    width: Dimensions.width10),
+                                                Text(f.format(todayToBeDone
+                                                    .todayToBeDoneBookingList[
+                                                        index]
+                                                    .user
+                                                    .createdAt))
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        })
+                    : CustomLoader();
+              }),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }

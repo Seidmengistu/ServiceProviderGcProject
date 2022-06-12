@@ -46,7 +46,7 @@ class PopularServiceController extends GetxController {
 // we write Response because repo return Response i.e Future<Response>
     Response response = await popularServiceRepo
         .getPopularServiceList(); //calling method found in repo that contain data fetched from the api client
-    // print(response.body);
+
     try {
       if (response.statusCode == 200) {
         _popularServiceList = []; //intialize to null to avoid data repition
@@ -66,7 +66,7 @@ class PopularServiceController extends GetxController {
   //For Add service
 
   final String endPoint =
-      "http://www.gcproject.daguads.com/service_provider/add_service";
+      "https://gcproject.daguads.com/service_provider/add_service";
   late File imageFile;
 
   // var controller = Get.find<PopularServiceController>();
@@ -74,7 +74,6 @@ class PopularServiceController extends GetxController {
   var descriptionController = TextEditingController();
   var priseController = TextEditingController();
   var typeController = TextEditingController();
-
   // choose image
   ImagePicker picker = ImagePicker();
   Future<void> chooseImage(ImageSource source) async {
@@ -116,18 +115,13 @@ class PopularServiceController extends GetxController {
     if (imageFile.path.isEmpty) {
       print("empty");
     }
-    // print(name);
-    // print(description);
-    // print(prise);
-    // print(imageFile);
-    // print(type);
-    // print(token);
     dio.options.headers["Authorization"] = "Bearer $token";
     dio.post(endPoint, data: formData).then((response) {
       print(response.statusCode);
       if (response.statusCode == 201) {
         EasyLoading.dismiss();
         getPopularServiceList();
+        EasyLoading.dismiss();
         Get.snackbar(
           "Success",
           "Service Added Successfully",
@@ -137,6 +131,8 @@ class PopularServiceController extends GetxController {
           margin: EdgeInsets.all(15),
           forwardAnimationCurve: Curves.bounceOut,
         );
+      } else {
+        EasyLoading.dismiss();
       }
       // ignore: invalid_return_type_for_catch_error
     }).catchError((error) => print(error));

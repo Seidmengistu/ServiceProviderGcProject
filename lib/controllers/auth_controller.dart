@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:service_provider/base/show_custom_snackbar.dart';
@@ -14,6 +13,7 @@ class AuthController extends GetxController implements GetxService {
   final AuthRepo authRepo;
   var isLogoPathSet = false.obs;
   var logoPath = "".obs;
+  var selectedType = 1.obs;
 
 //for image pick
   void setPath(String path) {
@@ -38,8 +38,9 @@ class AuthController extends GetxController implements GetxService {
     update();
 
     Response response = await authRepo.otpCheckPhone(checkPhoneNumberBody);
+    print(response.body);
     late CheckPhoneResponseModel checkPhoneResponseModel;
-print(response.body);
+
     if (response.statusCode == 200) {
       print("correct");
       checkPhoneResponseModel =
@@ -59,17 +60,16 @@ print(response.body);
 
 //For Login
   Future<ResponseModel> login(LoginModelBody loginModelBody) async {
-  
     _isLoadedd = true;
     update();
     Response response = await authRepo.login(loginModelBody);
     late ResponseModel responseModel;
     if (response.statusCode == 200) {
       authRepo.saveUserToken(response.body['token']);
-      
+
       responseModel =
           ResponseModel(response.body['status'], response.body['token']);
-          print(response.body['token']);
+      print(response.body['token']);
     } else {
       EasyLoading.dismiss();
       showCustomSnackBar(response.body.toString());
@@ -95,8 +95,4 @@ print(response.body);
     update();
     return responseModel;
   }
-
-//    bool userLoggedIn()  {
-//   return  authRepo.userLoggedIn();
-// }
 }

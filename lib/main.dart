@@ -6,7 +6,9 @@ import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:service_provider/controllers/auth_controller.dart';
+import 'package:service_provider/controllers/booking/booking_controller.dart';
 import 'package:service_provider/controllers/dashboard/dashboard_controller.dart';
+import 'package:service_provider/controllers/profile/profile_controller.dart';
 import 'package:service_provider/controllers/review/review_controller.dart';
 import 'package:service_provider/pages/auth/otp.dart';
 import 'package:service_provider/pages/splash_screen.dart';
@@ -45,21 +47,23 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.find<PopularServiceController>().getPopularServiceList();
+    Get.find<BookingController>().gettodayAllBookingList();
+    Get.find<BookingController>().getgeneralAllBookingList();
     Get.find<ReviewController>().getReviewList();
-    Get.put<DashboardController>(DashboardController()).fetchInformation();
-    // return GetBuilder<AuthController>(builder: (_) {
-    return GetBuilder<PopularServiceController>(builder: (_) {
-      return GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Service_Provider',
-        darkTheme: ThemeData.dark(),
-        themeMode: ThemeMode.system,
-        initialRoute: RouteHelper.getSplashScreen(),
-        getPages: RouteHelper.routes,
-        builder: EasyLoading.init(),
-      );
-      // });
-      // });
-    });
+    Get.find<DashboardController>().fetchInformation();
+    Get.find<ProfileController>().fetchInformation();
+
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Service_Provider',
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
+      initialRoute: RouteHelper.getSplashScreen(),
+      getPages: RouteHelper.routes,
+      builder: EasyLoading.init(),
+    );
+    // });
+    // });
+    // });
   }
 }

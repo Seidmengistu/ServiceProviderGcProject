@@ -6,8 +6,9 @@ class CheckPhoneNumberBody {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    // print(data);
+
     data['phone_number'] = this.phone;
+    
     return data;
   }
 }

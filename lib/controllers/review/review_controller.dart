@@ -9,7 +9,7 @@ class ReviewController extends GetxController {
 
   ReviewController({required this.reviewRepo});
 
-  List<dynamic> _review  = [];
+  List<dynamic> _review = [];
   List<dynamic> get reviewList => _review;
 
   Future<void> getReviewList() async {
@@ -18,13 +18,14 @@ class ReviewController extends GetxController {
     try {
       if (response.statusCode == 200) {
         _review = [];
-        _review.addAll(Review.fromJson(response.body).review);
+        _review.addAll(Review.fromJson(response.body).datas);
+
         _isLoad = true;
         update();
         //like setstate
       }
     } catch (e) {
-      print(e);
+      print("e");
     }
   }
 }
