@@ -6,6 +6,7 @@ import 'package:service_provider/pages/booking/booking_list.dart';
 import 'package:service_provider/pages/dashboard.dart';
 import 'package:service_provider/pages/report/report_list.dart';
 import 'package:service_provider/pages/services/main_service_page.dart';
+import 'package:service_provider/utils/dimensions.dart';
 
 class SHomePage extends StatefulWidget {
   final int selectedIndex;
@@ -45,32 +46,57 @@ class _HomePageState extends State<SHomePage> {
       PersistentBottomNavBarItem(
         icon: Icon(Icons.home),
         title: ("Home"),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
+        textStyle: TextStyle(
+            color: Colors.black,
+            fontFamily: 'TiroKannada',
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1),
+        activeColorPrimary: CupertinoColors.white,
+        inactiveColorPrimary: CupertinoColors.black,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.room_service),
         title: ("Services"),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
+        textStyle: TextStyle(
+            color: Colors.black,
+            fontFamily: 'TiroKannada',
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1),
+        activeColorPrimary: CupertinoColors.white,
+        inactiveColorPrimary: CupertinoColors.black,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.book_online),
         title: ("Booking"),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
+        textStyle: TextStyle(
+            color: Colors.black,
+            fontFamily: 'TiroKannada',
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1),
+        activeColorPrimary: CupertinoColors.white,
+        inactiveColorPrimary: CupertinoColors.black,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.report),
         title: ("Report"),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
+        textStyle: TextStyle(
+            color: Colors.black,
+            fontFamily: 'TiroKannada',
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1),
+        activeColorPrimary: CupertinoColors.white,
+        inactiveColorPrimary: CupertinoColors.black,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.settings),
         title: ("Settings"),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
+        textStyle: TextStyle(
+            color: Colors.black,
+            fontFamily: 'TiroKannada',
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1),
+        activeColorPrimary: CupertinoColors.white,
+        inactiveColorPrimary: CupertinoColors.black,
       ),
     ];
   }
@@ -83,7 +109,8 @@ class _HomePageState extends State<SHomePage> {
       screens: _buildScreens(),
       items: _navBarsItems(),
       confineInSafeArea: true,
-      backgroundColor: Colors.white, // Default is Colors.white.
+      
+      backgroundColor: Colors.blue, // Default is Colors.white.
       handleAndroidBackButtonPress: false, // Default is true.
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.

@@ -52,15 +52,41 @@ class _ReportListState extends State<ReportList> {
               children: [
                 TabBar(
                   isScrollable: false,
+                  indicatorColor: Colors.amberAccent,
+                  indicatorSize: TabBarIndicatorSize.label,
                   tabs: [
                     Tab(
-                      text: 'Review',
+                      // text: 'Review',
+                      child: Text(
+                        'Review',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Dimensions.font16,
+                            fontFamily: 'TiroKannada',
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1),
+                      ),
                     ),
                     Tab(
-                      text: 'Payment',
+                      child: Text(
+                        'Payment',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Dimensions.font16,
+                            fontFamily: 'TiroKannada',
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1),
+                      ),
                     ),
                     Tab(
-                      text: 'Withdraw Request',
+                      child: Text(
+                        'Withdraw',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Dimensions.font16,
+                            fontFamily: 'Roboto',
+                            letterSpacing: 1),
+                      ),
                     ),
                   ],
                 ),
@@ -350,15 +376,11 @@ paymetMethod() {
             preferredSize: new Size.fromHeight(20),
             child: Container(
               child: TabBar(
-                isScrollable: true,
+                isScrollable: false,
                 indicatorWeight: 3.0,
                 indicatorColor: Colors.blue[200],
                 unselectedLabelColor: Colors.black,
-                labelPadding: EdgeInsets.only(
-                    left: Dimensions.width50 + 20,
-                    right: Dimensions.width50 + 30,
-                    top: Dimensions.height10,
-                    bottom: Dimensions.height10),
+                indicatorSize: TabBarIndicatorSize.label,
                 tabs: <Widget>[
                   Tab(
                     // icon: Icon(
@@ -379,7 +401,11 @@ paymetMethod() {
                       child: Text(
                         'Add Payment',
                         style: TextStyle(
-                            color: Colors.black, fontSize: Dimensions.radius20),
+                            color: Colors.black,
+                            fontSize: Dimensions.font16,
+                            fontFamily: 'TiroKannada',
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1),
                       ),
                     ),
                   ),
@@ -390,7 +416,12 @@ paymetMethod() {
                     // ),
                     child: Text(
                       'Edit Payment',
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: Dimensions.font16,
+                          fontFamily: 'TiroKannada',
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1),
                     ),
                   ),
                 ],
@@ -409,113 +440,85 @@ paymetMethod() {
                   topRight: Radius.circular(Dimensions.radius30),
                 ),
               ),
-              child: GetBuilder<BookingController>(builder: (todayAll) {
-                return todayAll.isLoad
-                    ? ListView.builder(
-                        physics:
-                            AlwaysScrollableScrollPhysics(), //the whole page is scrollable but using alwaysscrolla
-                        shrinkWrap: true,
-                        itemCount: todayAll.todayAllBookingList.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              // Get.toNamed(RouteHelper.getRecomendedFood(index));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  top: Dimensions.height50,
-                                  left: Dimensions.width20,
-                                  right: Dimensions.width20,
-                                  bottom: Dimensions.height10),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: Dimensions.radius30 * 2,
-                                    backgroundImage: NetworkImage(todayAll
-                                        .todayAllBookingList[index]
-                                        .user
-                                        .profilePicture),
+              child: Container(
+                padding: EdgeInsets.only(bottom: 30),
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            left: Dimensions.width20,
+                            right: Dimensions.width50,
+                            top: Dimensions.height50),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.radius30),
+                            boxShadow: [
+                              BoxShadow(
+                                  blurRadius: 23,
+                                  spreadRadius: 0.1,
+                                  offset: Offset(1, 2),
+                                  color: Colors.grey.withOpacity(0.2))
+                            ]),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            // mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Container(
+                                  margin: EdgeInsets.only(
+                                      right: Dimensions.width20),
+                                  padding: EdgeInsets.only(
+                                    top: Dimensions.height20,
                                   ),
-                                  Expanded(
-                                    // to allow the width to take all the available width
-
-                                    child: Container(
-                                      height: Dimensions.ListViewTextSize,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            left: Dimensions.width10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            BigText(
-                                              text: todayAll
-                                                  .todayAllBookingList[index]
-                                                  .user
-                                                  .name,
-                                            ),
-                                            SizedBox(
-                                              height: Dimensions.height10,
-                                            ),
-                                            Container(
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    "Service Type : ",
-                                                    style: TextStyle(
-                                                      fontFamily: 'Roboto',
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: Dimensions.width20,
-                                                  ),
-                                                  Text(
-                                                    todayAll
-                                                        .todayAllBookingList[
-                                                            index]
-                                                        .service
-                                                        .name,
-                                                    style: TextStyle(
-                                                      fontFamily: 'Roboto',
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: Dimensions.height10,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Icon(
-                                                  Icons.calendar_today_rounded,
-                                                  color: Colors.blue,
-                                                  size: Dimensions.font16,
-                                                ),
-                                                SizedBox(
-                                                    width: Dimensions.width10),
-                                                Text(f.format(todayAll
-                                                    .todayAllBookingList[index]
-                                                    .user
-                                                    .createdAt))
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                  child: Text("Add Payment Method",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: 'TiroKannada',
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1))),
+                              _textInput(
+                                  hint: "Account Holder", icon: Icons.person),
+                              _textInput(
+                                  hint: "Account Number", icon: Icons.email),
+                              _textInput(
+                                  hint: "Payment Method",
+                                  icon: Icons.food_bank),
+                              SizedBox(
+                                height: Dimensions.height50,
                               ),
-                            ),
-                          );
-                        })
-                    : CustomLoader();
-              }),
+                              Container(
+                                width: 150,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        colors: [Colors.blue, Colors.blue],
+                                        end: Alignment.centerLeft,
+                                        begin: Alignment.centerRight),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(100),
+                                    )),
+                                child: Center(
+                                  child: RichText(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                          text: "Add",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: Dimensions.font20)),
+                                    ]),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
             Container(
               height: 500,
@@ -650,6 +653,36 @@ paymetMethod() {
             ),
           ],
         ),
+      ),
+    ),
+  );
+}
+
+Widget _textInput({controller, hint, icon}) {
+  return Container(
+    margin: EdgeInsets.only(
+        top: Dimensions.height20,
+        left: Dimensions.width20,
+        right: Dimensions.width20),
+    width: double.infinity,
+    height: 40,
+    decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(Dimensions.radius30),
+        boxShadow: [
+          BoxShadow(
+              blurRadius: 12,
+              spreadRadius: 5,
+              offset: Offset(1, 10),
+              color: Colors.grey.withOpacity(0.2))
+        ]),
+    padding: EdgeInsets.only(left: 10),
+    child: TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        hintText: hint,
+        prefixIcon: Icon(icon),
       ),
     ),
   );

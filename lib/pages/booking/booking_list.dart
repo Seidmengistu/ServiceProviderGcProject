@@ -31,27 +31,36 @@ class _BookingList extends State<BookingList> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue[300],
+          backgroundColor: Colors.blue,
           bottom: TabBar(
-            indicatorColor: Colors.blue[800],
             labelColor: Colors.red,
             unselectedLabelColor: Colors.black54,
+            indicatorColor: Colors.amberAccent,
+            indicatorSize: TabBarIndicatorSize.label,
             tabs: <Widget>[
               Tab(
                 child: Container(
                   child: Text(
-                    'Today ',
+                    'Today Booking',
                     style: TextStyle(
-                        color: Colors.white, fontSize: Dimensions.font20),
+                        color: Colors.white,
+                        fontSize: Dimensions.font16,
+                        fontFamily: 'TiroKannada',
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1),
                   ),
                 ),
               ),
               Tab(
                 child: Container(
                   child: Text(
-                    'General',
+                    'General Booking',
                     style: TextStyle(
-                        color: Colors.white, fontSize: Dimensions.font20),
+                        color: Colors.white,
+                        fontSize: Dimensions.font16,
+                        fontFamily: 'TiroKannada',
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1),
                   ),
                 ),
               ),
@@ -76,43 +85,55 @@ class _BookingList extends State<BookingList> {
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
-            bottom: TabBar(
-              isScrollable: true,
-              indicatorWeight: 3.0,
-              indicatorColor: Colors.blue[200],
-              unselectedLabelColor: Colors.black,
-              tabs: <Widget>[
-                Tab(
-                  // icon: Icon(
-                  //   Icons.today,
-                  //   color: Colors.green,
-                  // ),
-                  child: Text(
-                    'Today All',
-                    style: TextStyle(color: Colors.black),
-                  ),
+            bottom: PreferredSize(
+              preferredSize: new Size.fromHeight(20),
+              child: Container(
+                child: TabBar(
+                  isScrollable: false,
+                  indicatorWeight: 3.0,
+                  indicatorColor: Colors.blue[200],
+                  unselectedLabelColor: Colors.black,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: <Widget>[
+                    Tab(
+                      // icon: Icon(
+                      //   Icons.today,
+                      //   color: Colors.green,
+                      // ),
+                      child: Text('Today All',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'TiroKannada',
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1)),
+                    ),
+                    Tab(
+                      // icon: Icon(
+                      //   Icons.assessment,
+                      //   color: Colors.green,
+                      // ),
+                      child: Text('To be done',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'TiroKannada',
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1)),
+                    ),
+                    Tab(
+                      // icon: Icon(
+                      //   Icons.add_circle_outline,
+                      //   color: Colors.green,
+                      // ),
+                      child: Text('Completed ',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'TiroKannada',
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1)),
+                    ),
+                  ],
                 ),
-                Tab(
-                  // icon: Icon(
-                  //   Icons.assessment,
-                  //   color: Colors.green,
-                  // ),
-                  child: Text(
-                    'To be done',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-                Tab(
-                  // icon: Icon(
-                  //   Icons.add_circle_outline,
-                  //   color: Colors.green,
-                  // ),
-                  child: Text(
-                    'Completed Booking',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
           body: TabBarView(
@@ -532,43 +553,61 @@ class _BookingList extends State<BookingList> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          bottom: TabBar(
-            isScrollable: true,
-            indicatorWeight: 3.0,
-            indicatorColor: Colors.blue[200],
-            unselectedLabelColor: Colors.black,
-            tabs: <Widget>[
-              Tab(
-                // icon: Icon(
-                //   Icons.data_saver_on,
-                //   color: Colors.green,
-                // ),
-                child: Text(
-                  'General Completed',
-                  style: TextStyle(color: Colors.black),
-                ),
+          bottom: PreferredSize(
+            preferredSize: new Size.fromHeight(15),
+            child: Container(
+              child: TabBar(
+                isScrollable: false,
+                indicatorWeight: 3.0,
+                indicatorColor: Colors.blue[200],
+                unselectedLabelColor: Colors.black,
+                indicatorSize: TabBarIndicatorSize.label,
+                tabs: <Widget>[
+                  Tab(
+                    // icon: Icon(
+                    //   Icons.data_saver_on,
+                    //   color: Colors.green,
+                    // ),
+                    child: Text(
+                      'General All',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'TiroKannada',
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1),
+                    ),
+                  ),
+                  Tab(
+                    // icon: Icon(
+                    //   Icons.assessment,
+                    //   color: Colors.green,
+                    // ),
+                    child: Text(
+                      'To be done',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'TiroKannada',
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1),
+                    ),
+                  ),
+                  Tab(
+                    // icon: Icon(
+                    //   Icons.add_circle_outline,
+                    //   color: Colors.green,
+                    // ),
+                    child: Text(
+                      'Completed ',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontFamily: 'TiroKannada',
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1),
+                    ),
+                  ),
+                ],
               ),
-              Tab(
-                // icon: Icon(
-                //   Icons.assessment,
-                //   color: Colors.green,
-                // ),
-                child: Text(
-                  'To be done',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-              Tab(
-                // icon: Icon(
-                //   Icons.add_circle_outline,
-                //   color: Colors.green,
-                // ),
-                child: Text(
-                  'Completed Booking',
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
         body: TabBarView(
