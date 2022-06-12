@@ -28,4 +28,7 @@ class AppConstants {
     //For profile Info
     static const String PROFILE_INFO="/service_provider/profile";
 
+    //Payment
+    static const String GET_PAYMENT_METHOD_URI="/service_provider/get_payment_method";
+
 }

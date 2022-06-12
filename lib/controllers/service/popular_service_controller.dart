@@ -15,6 +15,8 @@ class PopularServiceController extends GetxController {
   final PopularServiceRepo popularServiceRepo; //instance of repo
   var isLogoPathSet = false.obs;
   var logoPath = "".obs;
+  var isLogoPathSett = false.obs;
+  var logoPathh = "".obs;
   var selectedType = 1.obs;
   //boolean for loading
 
@@ -28,6 +30,9 @@ class PopularServiceController extends GetxController {
   void setPath(String path) {
     logoPath.value = path;
     isLogoPathSet.value = true;
+    //for edit service
+    logoPathh.value = path;
+    isLogoPathSett.value = true;
   }
 
   //for drop down
@@ -66,10 +71,9 @@ class PopularServiceController extends GetxController {
   //For Add service
 
   final String endPoint =
-      "https://gcproject.daguads.com/service_provider/add_service";
+      "https://gcproject.awraticket.com/service_provider/add_service";
   late File imageFile;
 
-  // var controller = Get.find<PopularServiceController>();
   var nameController = TextEditingController();
   var descriptionController = TextEditingController();
   var priseController = TextEditingController();
@@ -117,7 +121,6 @@ class PopularServiceController extends GetxController {
     }
     dio.options.headers["Authorization"] = "Bearer $token";
     dio.post(endPoint, data: formData).then((response) {
-      print(response.statusCode);
       if (response.statusCode == 201) {
         EasyLoading.dismiss();
         getPopularServiceList();
@@ -135,6 +138,6 @@ class PopularServiceController extends GetxController {
         EasyLoading.dismiss();
       }
       // ignore: invalid_return_type_for_catch_error
-    }).catchError((error) => print(error));
+    });
   }
 }

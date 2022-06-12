@@ -285,98 +285,98 @@ class _MainServiceListState extends State<MainServiceList> {
     );
   }
 
-  Widget bottomSheet(BuildContext context) {
-    return Center(
-      child: Dialog(
-        elevation: 3,
-        backgroundColor: Colors.transparent,
-        child: Container(
-          // padding: EdgeInsets.only(
-          //   right: 16.0,
-          // ),
-          height: Dimensions.height50 * 3,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(75),
-                  bottomLeft: Radius.circular(75),
-                  topRight: Radius.circular(75),
-                  bottomRight: Radius.circular(75))),
-          child: Column(
-            children: [
-              BigText(text: "Choose Image"),
-              SizedBox(height: Dimensions.height20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        Widget bottomSheet(BuildContext context) {
+        return Center(
+          child: Dialog(
+            elevation: 3,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              // padding: EdgeInsets.only(
+              //   right: 16.0,
+              // ),
+              height: Dimensions.height50 * 3,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(75),
+                      bottomLeft: Radius.circular(75),
+                      topRight: Radius.circular(75),
+                      bottomRight: Radius.circular(75))),
+              child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      controller.chooseImage(ImageSource.gallery);
-                      Get.back();
-                      // Navigator.pop(context, bottomSheet(context));
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.image,
-                          color: Colors.blueAccent,
+                  BigText(text: "Choose Image"),
+                  SizedBox(height: Dimensions.height20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          controller.chooseImage(ImageSource.gallery);
+                          Get.back();
+                          // Navigator.pop(context, bottomSheet(context));
+                        },
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.image,
+                              color: Colors.blueAccent,
+                            ),
+                            SizedBox(
+                              height: Dimensions.height10,
+                            ),
+                            Text(
+                              "Gallery",
+                              style: TextStyle(
+                                // color: Colors.blue,
+                                fontSize: Dimensions.font20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: Dimensions.height10,
+                      ),
+                      SizedBox(
+                        width: Dimensions.width20 * 4,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          controller.chooseImage(ImageSource.camera);
+                          Get.back();
+                        },
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.camera,
+                              color: Colors.blueAccent,
+                            ),
+                            SizedBox(
+                              height: Dimensions.height10,
+                            ),
+                            Text(
+                              "Camera",
+                              style: TextStyle(
+                                // color: Colors.blue,
+                                fontSize: Dimensions.font20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          "Gallery",
-                          style: TextStyle(
-                            // color: Colors.blue,
-                            fontSize: Dimensions.font20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: Dimensions.width20 * 4,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      controller.chooseImage(ImageSource.camera);
-                      Get.back();
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.camera,
-                          color: Colors.blueAccent,
-                        ),
-                        SizedBox(
-                          height: Dimensions.height10,
-                        ),
-                        Text(
-                          "Camera",
-                          style: TextStyle(
-                            // color: Colors.blue,
-                            fontSize: Dimensions.font20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
+                      )
+                    ],
                   )
                 ],
-              )
-            ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
-  }
+        );
+      }
 
-  void clearTextField() {
-    controller.nameController.clear();
-    controller.typeController.clear();
-    controller.descriptionController.clear();
-    controller.priseController.clear();
-  }
+      void clearTextField() {
+        controller.nameController.clear();
+        controller.typeController.clear();
+        controller.descriptionController.clear();
+        controller.priseController.clear();
+      }
 }

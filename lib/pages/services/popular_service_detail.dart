@@ -262,33 +262,6 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
                                           return deleteAlert(context);
                                         },
                                       );
-
-                                      // Get.defaultDialog(
-
-                                      //   title: "Delete Alert !",
-                                      //   middleText:
-                                      //       "Are you sure to delete this service?",
-                                      //   backgroundColor: Colors.red,
-                                      //   confirm: Column(
-                                      //     crossAxisAlignment:
-                                      //         CrossAxisAlignment.start,
-                                      //     children: [
-                                      //       Padding(
-                                      //         padding: EdgeInsets.only(left: 2),
-                                      //         child: ElevatedButton(
-                                      //           onPressed: () {
-                                      //             EasyLoading.show(
-                                      //                 status: "Deleting...");
-                                      //             _delete(
-                                      //                 service.id.toString());
-                                      //             Get.back();
-                                      //           },
-                                      //           child: Text("Yes"),
-                                      //         ),
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // );
                                     },
                                   )
                                 ],
@@ -355,10 +328,24 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
                   SizedBox(
                     height: Dimensions.height20,
                   ),
+                  Obx(
+                    () => Center(
+                      child: CircleAvatar(
+                        // ignore: unrelated_type_equality_checks
+                        backgroundImage: controller.isLogoPathSett == true
+                            ? FileImage(File(controller.logoPathh.value))
+                                as ImageProvider
+                            : AssetImage("assets/l2.png"),
+                        radius: Dimensions.radius20 * 4,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: Dimensions.height20,
+                  ),
                   Container(
                     margin: EdgeInsets.only(
-                        left: Dimensions.width20 + 5,
-                        right: Dimensions.height20),
+                        left: Dimensions.width20, right: Dimensions.height20),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius:
@@ -370,47 +357,18 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
                               offset: Offset(1, 10),
                               color: Colors.grey.withOpacity(0.2))
                         ]),
-                    child: TextFormField(
-                      //  enabled: false,
-
-                      initialValue: service.image,
-                      decoration: InputDecoration(
-                          labelText: "Image",
-                          prefixIcon: GestureDetector(
-                            onTap: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) => bottomSheet(context));
-                            },
-                            child: Icon(
-                              Icons.image,
-                              color: Colors.blue[900],
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(Dimensions.radius30),
-                            borderSide: BorderSide(
-                              width: 1.0,
-                              color: Colors.white,
-                            ),
-                          ),
-
-                          //enabled boredr
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(Dimensions.radius30),
-                              borderSide: BorderSide(
-                                width: 1.0,
-                                color: Colors.white,
-                              )),
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(Dimensions.radius30),
-                              borderSide: BorderSide(
-                                width: 1.0,
-                                color: Colors.white,
-                              ))),
+                    child: FlatButton.icon(
+                      minWidth: double.infinity,
+                      onPressed: () {
+                        Get.dialog(bottomSheet(context));
+                      },
+                      icon: Icon(
+                        Icons.image_rounded,
+                        color: Colors.blue,
+                      ),
+                      label: Text(
+                        "Add Image",
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -652,84 +610,89 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
 
 // To Select Image
   Widget bottomSheet(BuildContext context) {
-    // Size size = MediaQuery.of(context).size;
-    return Container(
-      margin: EdgeInsets.only(
-          left: Dimensions.height20, right: Dimensions.height20),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(Dimensions.radius30),
-          boxShadow: [
-            BoxShadow(
-                blurRadius: 10,
-                spreadRadius: 7,
-                offset: Offset(1, 10),
-                color: Colors.grey.withOpacity(0.2))
-          ]),
-      height: Dimensions.height50 * 3,
-      width: double.infinity * 0.4,
-      child: Column(
-        children: [
-          BigText(text: "Choose Image"),
-          SizedBox(height: Dimensions.height20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+    return Center(
+      child: Dialog(
+        elevation: 3,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          // padding: EdgeInsets.only(
+          //   right: 16.0,
+          // ),
+          height: Dimensions.height50 * 3,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(75),
+                  bottomLeft: Radius.circular(75),
+                  topRight: Radius.circular(75),
+                  bottomRight: Radius.circular(75))),
+          child: Column(
             children: [
-              GestureDetector(
-                onTap: () {
-                  chooseImage(ImageSource.gallery);
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.image,
-                      color: Colors.blueAccent,
+              BigText(text: "Choose Image"),
+              SizedBox(height: Dimensions.height20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      chooseImage(ImageSource.gallery);
+                      Get.back();
+                      // Navigator.pop(context, bottomSheet(context));
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.image,
+                          color: Colors.blueAccent,
+                        ),
+                        SizedBox(
+                          height: Dimensions.height10,
+                        ),
+                        Text(
+                          "Gallery",
+                          style: TextStyle(
+                            // color: Colors.blue,
+                            fontSize: Dimensions.font20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: Dimensions.height10,
+                  ),
+                  SizedBox(
+                    width: Dimensions.width20 * 4,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      chooseImage(ImageSource.camera);
+                      Get.back();
+                    },
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.camera,
+                          color: Colors.blueAccent,
+                        ),
+                        SizedBox(
+                          height: Dimensions.height10,
+                        ),
+                        Text(
+                          "Camera",
+                          style: TextStyle(
+                            // color: Colors.blue,
+                            fontSize: Dimensions.font20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      "Gallery",
-                      style: TextStyle(
-                        // color: Colors.blue,
-                        fontSize: Dimensions.font20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: Dimensions.width20 * 4,
-              ),
-              GestureDetector(
-                onTap: () {
-                  chooseImage(ImageSource.camera);
-                },
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.camera,
-                      color: Colors.blueAccent,
-                    ),
-                    SizedBox(
-                      height: Dimensions.height10,
-                    ),
-                    Text(
-                      "Camera",
-                      style: TextStyle(
-                        // color: Colors.blue,
-                        fontSize: Dimensions.font20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
+                  )
+                ],
               )
             ],
-          )
-        ],
+          ),
+        ),
       ),
     );
   }
@@ -738,16 +701,16 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
   Future<void> _delete(String id) async {
     print(id);
     final String endPoint =
-        "http://www.gcproject.daguads.com/service_provider/delete_service/" +
+        "http://www.gcproject.awraticket.com/service_provider/delete_service/" +
             id;
-
+    // print(endPoint);
     String token = '';
     SharedPreferences pre = await SharedPreferences.getInstance();
     token = pre.getString(AppConstants.TOKEN) ?? "None token";
-    print(token);
+    // print(token);
     dio.options.headers["Authorization"] = "Bearer $token";
     dio.get(endPoint).then((response) {
-      print(response.statusMessage);
+      print(response.data);
       if (response.statusCode == 200) {
         EasyLoading.dismiss();
         controller.getPopularServiceList();
@@ -790,8 +753,9 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
   Future<void> _updateServices(String id) async {
     print(id);
     final String endPoint =
-        "http://www.gcproject.daguads.com/service_provider/edit_service/" + id;
-    print(endPoint);
+        "http://www.gcproject.awraticket.com/service_provider/edit_service/" +
+            id;
+
     String token = '';
     SharedPreferences pre = await SharedPreferences.getInstance();
     token = pre.getString(AppConstants.TOKEN) ?? "None token";
@@ -803,6 +767,7 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
     // print("edited name is" + name);
 
     String filename = imageFile.path.split('/').last;
+    print(filename);
     Dio.FormData formData = new Dio.FormData.fromMap({
       "name": name,
       "description": description,
@@ -897,7 +862,9 @@ class _PopularServiceDetailState extends State<PopularServiceDetail> {
                             colorBrightness: Brightness.dark,
                             onPressed: () {
                               EasyLoading.show(status: "Deleting...");
+
                               _delete(service.id.toString());
+
                               Get.back();
                             },
                             shape: RoundedRectangleBorder(

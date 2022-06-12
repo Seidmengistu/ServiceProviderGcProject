@@ -1,20 +1,26 @@
+import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as Dio;
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:service_provider/base/custom_loader.dart';
+import 'package:service_provider/base/show_custom_snackbar.dart';
 import 'package:service_provider/controllers/booking/booking_controller.dart';
+import 'package:service_provider/controllers/payment/payment_controller.dart';
 import 'package:service_provider/controllers/profile/profile_controller.dart';
 import 'package:service_provider/controllers/review/review_controller.dart';
-import 'package:service_provider/models/booking/booking_model.dart';
+
 import 'package:service_provider/utils/app_constants.dart';
 import 'package:service_provider/utils/dimensions.dart';
-import 'package:service_provider/widgets/app_icon.dart';
+
 import 'package:service_provider/widgets/big_text.dart';
-import 'package:service_provider/widgets/expandable_text_widget.dart';
+
 import 'package:service_provider/widgets/res/assets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReportList extends StatefulWidget {
   const ReportList({Key? key}) : super(key: key);
@@ -24,13 +30,12 @@ class ReportList extends StatefulWidget {
 
 class _ReportListState extends State<ReportList> {
   @override
+  var controller = Get.find<PaymentController>();
   final String avatar = avatars[0];
   Widget build(BuildContext context) {
     Get.find<ReviewController>().getReviewList();
-
     final _profileInfo = Get.find<ProfileController>();
     final f = new DateFormat.yMd();
-
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -365,7 +370,66 @@ class _ReportListState extends State<ReportList> {
 }
 
 paymetMethod() {
-  final f = new DateFormat.yMd();
+  var info = Get.find<PaymentController>();
+  var accountHolderControllerr = TextEditingController();
+  var accountNumberControllerr = TextEditingController();
+  var type = TextEditingController();
+  var id = TextEditingController();
+  var controller = Get.find<PaymentController>();
+  void clearTextField() {
+    controller.accountHolderController.clear();
+    controller.accountNumberController.clear();
+  }
+
+  accountHolderControllerr.text =
+      info.dashboardInformation[0].acountHolder.toString();
+  accountNumberControllerr.text =
+      info.dashboardInformation[0].accountnumber.toString();
+  type.text = info.dashboardInformation[0].paymenttype.toString();
+  id.text = info.dashboardInformation[0].id.toString();
+
+//update services
+  Dio.Dio dio = new Dio.Dio();
+
+  Future<void> _updatePaymentMethod(String id) async {
+    print(id);
+    final String endPoint =
+        "http://www.gcproject.awraticket.com/service_provider/edit_payment_method/" +
+            id;
+    print(endPoint);
+    String token = '';
+    SharedPreferences pre = await SharedPreferences.getInstance();
+    token = pre.getString(AppConstants.TOKEN) ?? "None token";
+    String accountHolder = accountHolderControllerr.text.trim();
+    String accountNumber = accountNumberControllerr.text.trim();
+    String paymentType = controller.selectedType.value.toString();
+
+    print(paymentType);
+    Dio.FormData formData = new Dio.FormData.fromMap({
+      "account_number": accountNumber,
+      "account_holder": accountHolder,
+      "payment_method": paymentType,
+    });
+    dio.options.headers["Authorization"] = "Bearer $token";
+    dio.post(endPoint, data: formData).then((response) {
+      if (response.statusCode == 200) {
+        EasyLoading.dismiss();
+        Get.back();
+
+        Get.snackbar(
+          "Success",
+          "Payment Type Updated Successfully",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 3),
+          margin: EdgeInsets.all(15),
+          forwardAnimationCurve: Curves.bounceOut,
+        );
+      }
+      // ignore: invalid_return_type_for_catch_error
+    }).catchError((error) => print(error));
+  }
+
   return DefaultTabController(
     length: 2,
     child: Container(
@@ -399,7 +463,7 @@ paymetMethod() {
                                 color: Colors.white.withOpacity(0.2))
                           ]),
                       child: Text(
-                        'Add Payment',
+                        'Add Payment Method',
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: Dimensions.font16,
@@ -415,7 +479,7 @@ paymetMethod() {
                     //   color: Colors.green,
                     // ),
                     child: Text(
-                      'Edit Payment',
+                      'Edit Payment Method',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: Dimensions.font16,
@@ -479,38 +543,128 @@ paymetMethod() {
                                           fontWeight: FontWeight.bold,
                                           letterSpacing: 1))),
                               _textInput(
-                                  hint: "Account Holder", icon: Icons.person),
+                                  hint: "Account Holder",
+                                  icon: Icons.person,
+                                  controller:
+                                      controller.accountHolderController),
                               _textInput(
-                                  hint: "Account Number", icon: Icons.email),
-                              _textInput(
-                                  hint: "Payment Method",
-                                  icon: Icons.food_bank),
+                                  hint: "Account Number",
+                                  icon: Icons.email,
+                                  controller:
+                                      controller.accountNumberController),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(
+                                    top: Dimensions.height20,
+                                    left: Dimensions.width20,
+                                    right: Dimensions.width20),
+                                width: double.infinity,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.radius30),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          blurRadius: 12,
+                                          spreadRadius: 5,
+                                          offset: Offset(1, 10),
+                                          color: Colors.grey.withOpacity(0.2))
+                                    ]),
+                                padding: EdgeInsets.only(left: 10),
+                                child: Obx(
+                                  () => DropdownButtonFormField<String>(
+                                    decoration: InputDecoration(
+                                      prefixIcon: Icon(
+                                        Icons.room_service,
+                                        color: Colors.blue[900],
+                                      ),
+                                    ),
+                                    items: [
+                                      DropdownMenuItem(
+                                        value: "1",
+                                        child: Text(
+                                          "CBE",
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font20,
+                                          ),
+                                        ),
+                                      ),
+                                      DropdownMenuItem(
+                                        value: "2",
+                                        child: Text(
+                                          "Abissinia Bank",
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font20,
+                                          ),
+                                        ),
+                                      ),
+                                      DropdownMenuItem(
+                                        value: "3",
+                                        child: Text(
+                                          "Dashen Bank",
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font20,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                    value: controller.selectedType.value
+                                        .toString(),
+                                    isExpanded: true,
+                                    onChanged: (selectedValue) {
+                                      controller.selectedType.value =
+                                          int.parse(selectedValue!);
+                                    },
+                                  ),
+                                ),
+                              ),
                               SizedBox(
                                 height: Dimensions.height50,
                               ),
                               Container(
-                                width: 150,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        colors: [Colors.blue, Colors.blue],
-                                        end: Alignment.centerLeft,
-                                        begin: Alignment.centerRight),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(100),
-                                    )),
-                                child: Center(
-                                  child: RichText(
-                                    text: TextSpan(children: [
-                                      TextSpan(
-                                          text: "Add",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: Dimensions.font20)),
-                                    ]),
-                                  ),
-                                ),
-                              )
+                                  width: 100,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          colors: [Colors.blue, Colors.blue],
+                                          end: Alignment.centerLeft,
+                                          begin: Alignment.centerRight),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(100),
+                                      )),
+                                  child: OutlineButton(
+                                    child: Text(
+                                      "Add",
+                                      style: TextStyle(
+                                          fontSize: Dimensions.font20),
+                                    ),
+                                    highlightedBorderColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            Dimensions.font16)),
+                                    onPressed: () {
+                                      if (controller.accountNumberController
+                                          .text.isEmpty) {
+                                        showCustomSnackBar(
+                                            'Please Add Account Number',
+                                            title: 'Error ');
+                                      } else if (controller
+                                          .accountHolderController
+                                          .text
+                                          .isEmpty) {
+                                        showCustomSnackBar(
+                                            'Please Add Account Holder Name',
+                                            title: 'Error');
+                                      } else {
+                                        EasyLoading.show(status: "Saving...");
+                                        controller.addPayment();
+                                        // clearTextField();
+                                      }
+                                    },
+                                  ))
                             ],
                           ),
                         ),
@@ -529,127 +683,153 @@ paymetMethod() {
                   topRight: Radius.circular(Dimensions.radius30),
                 ),
               ),
-              child: GetBuilder<BookingController>(builder: (todayToBeDone) {
-                return todayToBeDone.isLoad
-                    ? ListView.builder(
-                        physics:
-                            AlwaysScrollableScrollPhysics(), //the whole page is scrollable but using alwaysscrolla
-                        shrinkWrap: true,
-                        itemCount:
-                            todayToBeDone.todayToBeDoneBookingList.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              // Get.toNamed(RouteHelper.getRecomendedFood(index));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  top: Dimensions.height50,
-                                  left: Dimensions.width20,
-                                  right: Dimensions.width20,
-                                  bottom: Dimensions.height10),
-                              child: Row(
-                                children: [
-                                  //image section
-                                  GestureDetector(
-                                    onTap: () {
-                                      // Get.toNamed(
-                                      //     RouteHelper.getPopularService(
-                                      //         index));
-                                    },
-                                    child: CircleAvatar(
-                                      radius: Dimensions.radius30 * 2,
-                                      backgroundImage: NetworkImage(
-                                          todayToBeDone
-                                              .todayToBeDoneBookingList[index]
-                                              .user
-                                              .profilePicture),
-                                    ),
+              child: Container(
+                padding: EdgeInsets.only(bottom: 30),
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            left: Dimensions.width20,
+                            right: Dimensions.width50,
+                            top: Dimensions.height50),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.radius30),
+                            boxShadow: [
+                              BoxShadow(
+                                  blurRadius: 23,
+                                  spreadRadius: 0.1,
+                                  offset: Offset(1, 2),
+                                  color: Colors.grey.withOpacity(0.2))
+                            ]),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            // mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Container(
+                                  margin: EdgeInsets.only(
+                                      right: Dimensions.width20),
+                                  padding: EdgeInsets.only(
+                                    top: Dimensions.height20,
                                   ),
-                                  //TExT container
-
-                                  Expanded(
-                                    // to ToBeDoneow the width to take ToBeDone the available width
-
-                                    child: Container(
-                                      height: Dimensions.ListViewTextSize,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            left: Dimensions.width10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            BigText(
-                                              text: todayToBeDone
-                                                  .todayToBeDoneBookingList[
-                                                      index]
-                                                  .user
-                                                  .name,
-                                            ),
-                                            SizedBox(
-                                              height: Dimensions.height10,
-                                            ),
-                                            Container(
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    "Service Type : ",
-                                                    style: TextStyle(
-                                                      fontFamily: 'Roboto',
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: Dimensions.width20,
-                                                  ),
-                                                  Text(
-                                                    todayToBeDone
-                                                        .todayToBeDoneBookingList[
-                                                            index]
-                                                        .service
-                                                        .name,
-                                                    style: TextStyle(
-                                                      fontFamily: 'Roboto',
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: Dimensions.height10,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Icon(
-                                                  Icons.calendar_today_rounded,
-                                                  color: Colors.blue,
-                                                  size: Dimensions.font16,
-                                                ),
-                                                SizedBox(
-                                                    width: Dimensions.width10),
-                                                Text(f.format(todayToBeDone
-                                                    .todayToBeDoneBookingList[
-                                                        index]
-                                                    .user
-                                                    .createdAt))
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                  child: Text("Edit Payment Method",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: 'TiroKannada',
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1))),
+                              _textInput(
+                                  hint: "Account Holder",
+                                  icon: Icons.person,
+                                  controller: accountHolderControllerr),
+                              _textInput(
+                                  hint: "Account Number",
+                                  icon: Icons.email,
+                                  controller: accountNumberControllerr),
+                              SizedBox(
+                                height: Dimensions.height10,
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(
+                                    top: Dimensions.height20,
+                                    left: Dimensions.width20,
+                                    right: Dimensions.width20),
+                                width: double.infinity,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.radius30),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          blurRadius: 12,
+                                          spreadRadius: 5,
+                                          offset: Offset(1, 10),
+                                          color: Colors.grey.withOpacity(0.2))
+                                    ]),
+                                padding: EdgeInsets.only(left: 10),
+                                child: Obx(
+                                  () => DropdownButtonFormField<String>(
+                                    decoration: InputDecoration(
+                                      prefixIcon: Icon(
+                                        Icons.room_service,
+                                        color: Colors.blue[900],
                                       ),
                                     ),
-                                  )
-                                ],
+                                    items: [
+                                      DropdownMenuItem(
+                                        value: "1",
+                                        child: Text(
+                                          "CBE",
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font20,
+                                          ),
+                                        ),
+                                      ),
+                                      DropdownMenuItem(
+                                        value: "2",
+                                        child: Text(
+                                          "Abissinia Bank",
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font20,
+                                          ),
+                                        ),
+                                      ),
+                                      DropdownMenuItem(
+                                        value: "3",
+                                        child: Text(
+                                          "Dashen Bank",
+                                          style: TextStyle(
+                                            fontSize: Dimensions.font20,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                    value: controller.selectedType.value
+                                        .toString(),
+                                    isExpanded: true,
+                                    onChanged: (selectedValue) {
+                                      controller.selectedType.value =
+                                          int.parse(selectedValue!);
+                                    },
+                                  ),
+                                ),
                               ),
-                            ),
-                          );
-                        })
-                    : CustomLoader();
-              }),
+                              SizedBox(
+                                height: Dimensions.height50,
+                              ),
+                              Center(
+                                child: FloatingActionButton.extended(
+                                  label: Text("Update"),
+                                  icon: Icon(Icons.add),
+                                  onPressed: () {
+                                    if (accountHolderControllerr.text.isEmpty) {
+                                      showCustomSnackBar(
+                                          'Account Holder Name is Required',
+                                          title: 'Error ');
+                                    } else if (accountNumberControllerr
+                                        .text.isEmpty) {
+                                      showCustomSnackBar(
+                                          'Account Number  is Required',
+                                          title: 'Error');
+                                    } else {
+                                      EasyLoading.show(status: "Updating");
+                                      _updatePaymentMethod(id.text.toString());
+                                    }
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             ),
           ],
         ),

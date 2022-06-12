@@ -349,6 +349,8 @@ class _BookingList extends State<BookingList> {
                                                           .service
                                                           .name,
                                                       style: TextStyle(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         fontFamily: 'Roboto',
                                                       ),
                                                     ),

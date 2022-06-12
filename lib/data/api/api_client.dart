@@ -2,6 +2,7 @@
 
 import 'package:get/get.dart';
 import 'package:service_provider/utils/app_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient extends GetConnect implements GetxService {
   late String token;
@@ -142,4 +143,17 @@ class ApiClient extends GetConnect implements GetxService {
       return Response(statusCode: 1, statusText: e.toString());
     }
   }
+//To Get Payment METHODS
+
+  Future<Response> getPaymentMethodData(String uri) async {
+    try {
+      Response response = await get(uri, headers: _mainHeaders);
+
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, statusText: e.toString());
+    }
+  }
+
+
 }

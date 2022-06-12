@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_rx/get_rx.dart';
-import 'package:get/route_manager.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:service_provider/models/dashboard/dashboard_model.dart';
 import 'package:service_provider/utils/app_constants.dart';

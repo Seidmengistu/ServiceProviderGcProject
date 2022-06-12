@@ -54,8 +54,7 @@ class ProfileController extends GetxController {
       isLoading.value = false;
       update();
     } else {
-      Get.snackbar('Error Loading data!',
-          'Sever responded: ${response.statusCode}:${response.reasonPhrase.toString()}');
+      
     }
   }
 }

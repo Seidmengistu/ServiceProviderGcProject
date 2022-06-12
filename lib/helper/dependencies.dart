@@ -1,12 +1,15 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:service_provider/controllers/booking/booking_controller.dart';
 import 'package:service_provider/controllers/dashboard/dashboard_controller.dart';
+import 'package:service_provider/controllers/payment/payment_controller.dart';
 import 'package:service_provider/controllers/profile/profile_controller.dart';
 
 
 import 'package:service_provider/controllers/review/review_controller.dart';
 import 'package:service_provider/controllers/service/popular_service_controller.dart';
 import 'package:service_provider/data/repository/booking/booking_repo.dart';
+import 'package:service_provider/data/repository/payment/payment_repo.dart';
+
 
 
 import 'package:service_provider/data/repository/review/review_repo.dart';
@@ -42,6 +45,10 @@ Future<void> init() async {
   Get.lazyPut(() => PopularServiceController(popularServiceRepo: Get.find()));
   Get.lazyPut(() => ReviewController(reviewRepo: Get.find()));
   Get.lazyPut(() => BookingController(bookingRepo: Get.find()));
+  
+  
    Get.put(DashboardController());
     Get.put(ProfileController());
+    Get.put(PaymentController());
+
 }
