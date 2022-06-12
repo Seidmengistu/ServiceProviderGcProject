@@ -83,7 +83,7 @@ class BookingController extends GetxController {
       if (response.statusCode == 200) {
         _generalAllBooking = [];
         _generalAllBooking.addAll(Booking.fromJson(response.body).data);
-        print(_generalAllBooking.length);
+        
         _isLoad = true;
         update();
         //like setstate

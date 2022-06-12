@@ -7,6 +7,7 @@ import 'package:service_provider/controllers/profile/profile_controller.dart';
 
 import 'package:service_provider/controllers/review/review_controller.dart';
 import 'package:service_provider/controllers/service/popular_service_controller.dart';
+import 'package:service_provider/controllers/withdraw/withdraw_controller.dart';
 import 'package:service_provider/data/repository/booking/booking_repo.dart';
 import 'package:service_provider/data/repository/payment/payment_repo.dart';
 
@@ -34,21 +35,22 @@ Future<void> init() async {
   //api first always load api client
   Get.lazyPut(() => ApiClient(appBaseUrl: AppConstants.BASE_URL));
 
-  // in the repo we pass Api Client because it contain   "final ApiClient apiClient;""
+
 
   Get.lazyPut(() => AuthRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() =>PopularServiceRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => ReviewRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => BookingRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
-  //controller in this we pass final;
+  
   Get.lazyPut(() => AuthController(authRepo: Get.find()));
   Get.lazyPut(() => PopularServiceController(popularServiceRepo: Get.find()));
   Get.lazyPut(() => ReviewController(reviewRepo: Get.find()));
   Get.lazyPut(() => BookingController(bookingRepo: Get.find()));
   
   
-   Get.put(DashboardController());
+    Get.put(DashboardController());
     Get.put(ProfileController());
     Get.put(PaymentController());
+    Get.put(WithdrawController());
 
 }
