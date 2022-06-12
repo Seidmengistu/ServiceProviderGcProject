@@ -10,6 +10,7 @@ import 'package:service_provider/controllers/booking/booking_controller.dart';
 import 'package:service_provider/controllers/dashboard/dashboard_controller.dart';
 import 'package:service_provider/controllers/profile/profile_controller.dart';
 import 'package:service_provider/controllers/review/review_controller.dart';
+import 'package:service_provider/controllers/withdraw/withdraw_controller.dart';
 import 'package:service_provider/models/review/review_model.dart';
 import 'package:service_provider/pages/auth/otp.dart';
 import 'package:service_provider/pages/splash_screen.dart';
@@ -51,11 +52,13 @@ class HomePage extends StatelessWidget {
     Get.find<PopularServiceController>().getPopularServiceList();
     Get.find<BookingController>().gettodayAllBookingList();
     Get.find<BookingController>().getgeneralAllBookingList();
-    Get.find<ReviewController>().getReviewList();
+    
     Get.find<DashboardController>().fetchInformation();
     Get.find<ProfileController>().fetchInformation();
     Get.find<ReviewController>().getReviewList();
+    Get.find<WithdrawController>().getWithdrawList();
     Get.find<PaymentController>().fetchInformation();
+     
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,

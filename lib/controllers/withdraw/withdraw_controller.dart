@@ -2,22 +2,20 @@ import 'package:dio/dio.dart' as Dio;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-
-import 'package:service_provider/models/Payment/payment_method_model.dart';
+import 'package:service_provider/data/repository/withdraw/withdraw_repo.dart';
 import 'package:service_provider/models/withdraw/withdraw_model.dart';
 
 import 'package:service_provider/utils/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class WithdrawController extends GetxController {
-  var dashboardInformation = <WithdrawModel>[].obs;
+  final WithdrawRepo withdrawRepo;
   bool _isLoad = false;
-
   bool get isLoad => _isLoad;
+
+  WithdrawController({required this.withdrawRepo});
   var selectedType = 1.obs;
 
   var amountController = TextEditingController();
@@ -55,7 +53,7 @@ class WithdrawController extends GetxController {
         Get.snackbar(
           "Information!",
           "You have a pending request",
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.amber,
           duration: const Duration(seconds: 3),
           margin: EdgeInsets.all(15),
@@ -66,45 +64,24 @@ class WithdrawController extends GetxController {
     }).catchError((error) => print(error));
   }
 
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   fetchInformation();
-  // }
+//to get withdraw
+  List<dynamic> _withdraw = [];
+  List<dynamic> get withdrawList => _withdraw;
 
-  // Future<void> fetchInformation() async {
-  //   String token = '';
-
-  //   late Map<String, String> _mainHeaders;
-  //   SharedPreferences pre = await SharedPreferences.getInstance();
-  //   token = pre.getString(AppConstants.TOKEN) ?? "None token";
-
-  //   _mainHeaders = {
-  //     'Content-type': 'application/json; charset=UTF-8',
-  //     'Authorization': 'Bearer $token',
-  //   };
-  //   final response = await http.get(
-  //       Uri.parse(
-  //           "http://www.gcproject.awraticket.com/service_provider/withdraw_data"),
-  //       headers: _mainHeaders);
-
-  //   if (response.statusCode == 200) {
-  //     PaymentModel _dashboardModel =
-  //         PaymentModel.fromJson(jsonDecode(response.body));
-
-  //     dashboardInformation.add(
-  //       PaymentModel(
-  //         id: _dashboardModel.id,
-  //         accountnumber: _dashboardModel.accountnumber,
-  //         acountHolder: _dashboardModel.acountHolder,
-  //         paymenttype: _dashboardModel.paymenttype,
-  //       ),
-  //     );
-
-  //     update();
-  //   } else {
-  //     print("iNdashboard");
-  //   }
-  // }
-
+  Future<void> getWithdrawList() async {
+    Response response = await withdrawRepo.getWithdrawList();
+    
+    try {
+      if (response.statusCode == 200) {
+        _withdraw = [];
+        _withdraw.addAll(Withdraw.fromJson(response.body).data);
+        
+        _isLoad = true;
+        update();
+        //like setstate
+      }
+    } catch (e) {
+      print("e");
+    }
+  }
 }

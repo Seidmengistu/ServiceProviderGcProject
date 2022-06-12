@@ -9,13 +9,14 @@ import 'package:service_provider/controllers/review/review_controller.dart';
 import 'package:service_provider/controllers/service/popular_service_controller.dart';
 import 'package:service_provider/controllers/withdraw/withdraw_controller.dart';
 import 'package:service_provider/data/repository/booking/booking_repo.dart';
-import 'package:service_provider/data/repository/payment/payment_repo.dart';
+
 
 
 
 import 'package:service_provider/data/repository/review/review_repo.dart';
 
 import 'package:service_provider/data/repository/service/popular_service_repo.dart';
+import 'package:service_provider/data/repository/withdraw/withdraw_repo.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:service_provider/controllers/auth_controller.dart';
@@ -41,16 +42,17 @@ Future<void> init() async {
   Get.lazyPut(() =>PopularServiceRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => ReviewRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
   Get.lazyPut(() => BookingRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
-  
+  Get.lazyPut(() => WithdrawRepo(apiClient: Get.find(), sharedPreferences: Get.find()));
+  //controller injection
   Get.lazyPut(() => AuthController(authRepo: Get.find()));
   Get.lazyPut(() => PopularServiceController(popularServiceRepo: Get.find()));
   Get.lazyPut(() => ReviewController(reviewRepo: Get.find()));
   Get.lazyPut(() => BookingController(bookingRepo: Get.find()));
-  
+  Get.lazyPut(() => WithdrawController(withdrawRepo: Get.find()));
   
     Get.put(DashboardController());
     Get.put(ProfileController());
     Get.put(PaymentController());
-    Get.put(WithdrawController());
+   
 
 }

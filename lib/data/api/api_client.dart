@@ -155,5 +155,16 @@ class ApiClient extends GetConnect implements GetxService {
     }
   }
 
+//to get all withdraws
+
+Future<Response> getWithdrawData(String uri) async {
+    try {
+      Response response = await get(uri, headers: _mainHeaders);
+
+      return response;
+    } catch (e) {
+      return Response(statusCode: 1, statusText: e.toString());
+    }
+  }
 
 }

@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:dio/dio.dart' as Dio;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -9,7 +8,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:service_provider/base/custom_loader.dart';
 import 'package:service_provider/base/show_custom_snackbar.dart';
-import 'package:service_provider/controllers/booking/booking_controller.dart';
 import 'package:service_provider/controllers/payment/payment_controller.dart';
 import 'package:service_provider/controllers/profile/profile_controller.dart';
 import 'package:service_provider/controllers/review/review_controller.dart';
@@ -214,15 +212,11 @@ class _ReportListState extends State<ReportList> {
                                                           maxRadius: Dimensions
                                                               .radius30,
                                                           backgroundImage:
-                                                              NetworkImage(AppConstants
-                                                                      .BASE_URL +
-                                                                  AppConstants
-                                                                      .UPLOAD_URL +
-                                                                  reviewList
-                                                                      .reviewList[
-                                                                          index]
-                                                                      .user
-                                                                      .profilePicture),
+                                                              NetworkImage(reviewList
+                                                                  .reviewList[
+                                                                      index]
+                                                                  .user
+                                                                  .profilePicture),
                                                         ),
                                                       ),
                                                       Expanded(
@@ -303,8 +297,12 @@ class _ReportListState extends State<ReportList> {
                                                                           child:
                                                                               Text(
                                                                             reviewList.reviewList[index].review,
+                                                                            textAlign:
+                                                                                TextAlign.justify,
                                                                             style:
-                                                                                TextStyle(overflow: TextOverflow.fade),
+                                                                                TextStyle(
+                                                                              fontSize: Dimensions.font16,
+                                                                            ),
                                                                           ),
                                                                         )
                                                                       ],
@@ -343,7 +341,7 @@ class _ReportListState extends State<ReportList> {
                                     style: TextStyle(
                                         fontFamily: 'TiroKannada',
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.amber[800],
+                                        color: Colors.deepOrange,
                                         fontSize: Dimensions.font16 + 2),
                                   ),
                                 ],
@@ -842,52 +840,17 @@ withdraw() {
   var amountController = TextEditingController();
   var id = TextEditingController();
   var controller = Get.find<WithdrawController>();
+  var withdraw = Get.find<WithdrawController>().getWithdrawList();
   void clearTextField() {
     controller.amountController.clear();
   }
 
-  // amountController.text =info.dashboardInformation[0].amount.toString();
-  // id.text=info.dashboardInformation[0].id.toString();
-
-// //update services
-//   Dio.Dio dio = new Dio.Dio();
-
-//   Future<void> _updateWithdraw(String id) async {
-//     final String endPoint =
-//         "http://www.gcproject.awraticket.com/service_provider/withdraw_data/" +
-//             id;
-// print(id);
-//     String token = '';
-//     SharedPreferences pre = await SharedPreferences.getInstance();
-//     token = pre.getString(AppConstants.TOKEN) ?? "None token";
-//     String amount = amountController.text.trim();
-
-//     print(token);
-//     Dio.FormData formData = new Dio.FormData.fromMap({
-//       "amount": amount,
-
-//     });
-//     dio.options.headers["Authorization"] = "Bearer $token";
-//     dio.post(endPoint, data: formData).then((response) {
-//       if (response.statusCode == 200) {
-//         EasyLoading.dismiss();
-
-//         Get.snackbar(
-//           "Success",
-//           "Payment Type Updated Successfully",
-//           snackPosition: SnackPosition.TOP,
-//           backgroundColor: Colors.green,
-//           duration: const Duration(seconds: 3),
-//           margin: EdgeInsets.all(15),
-//           forwardAnimationCurve: Curves.bounceOut,
-//         );
-//       }
-//       // ignore: invalid_return_type_for_catch_error
-//     }).catchError((error) => print(error));
-//   }
+  final Color primaryColor = Color(0xffFD6592);
+  final Color bgColor = Color(0xffF9E0E3);
+  final Color secondaryColor = Color(0xff324558);
 
   return DefaultTabController(
-    length: 3,
+    length: 2,
     child: Container(
       child: Scaffold(
         appBar: AppBar(
@@ -898,8 +861,9 @@ withdraw() {
               child: TabBar(
                 isScrollable: false,
                 indicatorWeight: 3.0,
-                indicatorColor: Colors.blue[200],
-                unselectedLabelColor: Colors.black,
+                labelColor: primaryColor,
+                indicatorColor: primaryColor,
+                unselectedLabelColor: secondaryColor,
                 indicatorSize: TabBarIndicatorSize.label,
                 tabs: <Widget>[
                   Tab(
@@ -935,22 +899,7 @@ withdraw() {
                     //   color: Colors.green,
                     // ),
                     child: Text(
-                      'Edit Withdraw Method',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: Dimensions.font16,
-                          fontFamily: 'TiroKannada',
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1),
-                    ),
-                  ),
-                  Tab(
-                    // icon: Icon(
-                    //   Icons.assessment,
-                    //   color: Colors.green,
-                    // ),
-                    child: Text(
-                      'Withdraw info',
+                      'Withdraw Data',
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: Dimensions.font16,
@@ -1007,7 +956,7 @@ withdraw() {
                                   padding: EdgeInsets.only(
                                     top: Dimensions.height20,
                                   ),
-                                 child: Text("Withdraw request",
+                                  child: Text("Withdraw request",
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontFamily: 'TiroKannada',
@@ -1063,88 +1012,17 @@ withdraw() {
                 ),
               ),
             ),
-            Container(
-              height: 500,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(Dimensions.radius30),
-                  topRight: Radius.circular(Dimensions.radius30),
-                ),
-              ),
-              child: Container(
-                padding: EdgeInsets.only(bottom: 30),
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            left: Dimensions.width20,
-                            right: Dimensions.width50,
-                            top: Dimensions.height50),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.circular(Dimensions.radius30),
-                            boxShadow: [
-                              BoxShadow(
-                                  blurRadius: 23,
-                                  spreadRadius: 0.1,
-                                  offset: Offset(1, 2),
-                                  color: Colors.grey.withOpacity(0.2))
-                            ]),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            // mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Container(
-                                  margin: EdgeInsets.only(
-                                      right: Dimensions.width20),
-                                  padding: EdgeInsets.only(
-                                    top: Dimensions.height20,
-                                  ),
-                                  child: Text("Edit Payment Method",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontFamily: 'TiroKannada',
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: 1))),
-                              _textInput(
-                                  hint: "Amount",
-                                  icon: Icons.person,
-                                  controller: amountController),
-                              SizedBox(
-                                height: Dimensions.height10,
-                              ),
-                              SizedBox(
-                                height: Dimensions.height50,
-                              ),
-                              Center(
-                                child: FloatingActionButton.extended(
-                                  label: Text("Update"),
-                                  icon: Icon(Icons.add),
-                                  onPressed: () {
-                                    if (amountController.text.isEmpty) {
-                                      showCustomSnackBar('Please Enter Amount',
-                                          title: 'Error ');
-                                    } else {
-                                      EasyLoading.show(status: "Updating");
-                                      // _updateWithdraw(id.text.toString());
-                                    }
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Text("info"),
+            GetBuilder<WithdrawController>(builder: (withdrawList) {
+              return ListView.separated(
+                padding: EdgeInsets.all(Dimensions.height30),
+                itemCount: withdrawList.withdrawList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return _buildArticleItem(index);
+                },
+                separatorBuilder: (context, index) =>
+                    SizedBox(height: Dimensions.height20),
+              );
+            }),
           ],
         ),
       ),
@@ -1179,5 +1057,107 @@ Widget _textInput({controller, hint, icon}) {
         prefixIcon: Icon(icon),
       ),
     ),
+  );
+}
+
+Widget _buildArticleItem(int index) {
+  final Color primaryColor = Color(0xffFD6592);
+  final Color bgColor = Color(0xffF9E0E3);
+  final Color secondaryColor = Color(0xff324558);
+  final String sample = images[2];
+  final f = new DateFormat.yMd();
+  return Container(
+    color: Colors.white,
+    child: GetBuilder<WithdrawController>(builder: (withdrawList) {
+      return Stack(
+        children: <Widget>[
+          Container(
+            width: 50,
+            height: 50,
+            color: bgColor,
+          ),
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.all(Dimensions.height15),
+            margin: EdgeInsets.all(Dimensions.height15),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          Text(
+                            "Amount",
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              color: secondaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          SizedBox(
+                            width: Dimensions.width20,
+                          ),
+                          Text(
+                            withdrawList.withdrawList[index].amount +
+                                "  " +
+                                "Birr",
+                            textAlign: TextAlign.justify,
+                            style: TextStyle(
+                              color: secondaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: Dimensions.height10,
+                      ),
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: const SizedBox(width: 5.0),
+                            ),
+                            WidgetSpan(
+                              child: const SizedBox(width: 20.0),
+                            ),
+                            TextSpan(
+                              text: f
+                                  .format(withdrawList
+                                      .withdrawList[index].createdAt)
+                                  .toString(),
+                            ),
+                            WidgetSpan(
+                              child: SizedBox(width: Dimensions.width50 * 2),
+                            ),
+                            WidgetSpan(
+                              child: CircleAvatar(
+                                radius: 10.0,
+                                backgroundColor: primaryColor,
+                              ),
+                            ),
+                            WidgetSpan(
+                              child: const SizedBox(width: 10.0),
+                            ),
+                            TextSpan(
+                                text: withdrawList.withdrawList[index].status,
+                                style: TextStyle(fontSize: 16.0)),
+                          ],
+                        ),
+                        style: TextStyle(height: 2.0),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      );
+    }),
   );
 }

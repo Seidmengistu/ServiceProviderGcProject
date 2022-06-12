@@ -30,5 +30,6 @@ class AppConstants {
 
     //Payment
     static const String GET_PAYMENT_METHOD_URI="/service_provider/get_payment_method";
-
+//withdraw
+    static const String WITHDRAW_URI="/service_provider/withdraws";
 }
