@@ -57,9 +57,9 @@ class Data {
     serviceProviderId = json['service_provider_id'];
     userId = json['user_id'];
     status = json['status'];
-    serviceDate = json['service_date'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    serviceDate = json['service_data'] == null ? "" : json['service_data'];
+    createdAt = json['created_at'] == null ? "" : json['created_at'];
+    updatedAt = json['updated_at'] == null ? "" : json['updated_at'];
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
     service =
         json['service'] != null ? new Service.fromJson(json['service']) : null;

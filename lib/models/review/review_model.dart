@@ -24,10 +24,10 @@ class Data {
   late List<User> _data;
 
   List<User> get datas => _data;
-  int? id;
-  String? rate;
-  String? review;
-  String? userId;
+  int? id ;
+  String? rate ;
+  String? review ;
+  String? userId ;
   String? serviceProviderId;
   DateTime? createdAt;
   String? updatedAt;

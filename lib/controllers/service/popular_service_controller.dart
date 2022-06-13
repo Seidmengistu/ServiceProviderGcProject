@@ -140,4 +140,5 @@ class PopularServiceController extends GetxController {
       // ignore: invalid_return_type_for_catch_error
     });
   }
+
 }

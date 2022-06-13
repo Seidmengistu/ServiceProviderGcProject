@@ -52,13 +52,12 @@ class HomePage extends StatelessWidget {
     Get.find<PopularServiceController>().getPopularServiceList();
     Get.find<BookingController>().gettodayAllBookingList();
     Get.find<BookingController>().getgeneralAllBookingList();
-    
+
     Get.find<DashboardController>().fetchInformation();
     Get.find<ProfileController>().fetchInformation();
     Get.find<ReviewController>().getReviewList();
     Get.find<WithdrawController>().getWithdrawList();
     Get.find<PaymentController>().fetchInformation();
-     
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,

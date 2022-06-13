@@ -1134,19 +1134,33 @@ Widget _buildArticleItem(int index) {
                             WidgetSpan(
                               child: SizedBox(width: Dimensions.width50 * 2),
                             ),
-                            WidgetSpan(
-                              child: CircleAvatar(
-                                radius: 10.0,
-                                backgroundColor: primaryColor,
-                              ),
-                            ),
-                            WidgetSpan(
-                              child: const SizedBox(width: 10.0),
-                            ),
-                            TextSpan(
-                                text: withdrawList.withdrawList[index].status,
-                                style: TextStyle(fontSize: 16.0)),
+
+                            // (foo==1)? something1()
+                            //:(foo==2)? something2()
+                            //: something3();
+
+                            withdrawList.withdrawList[index].status == "3"
+                                ? TextSpan(
+                                    text: "Paid",
+                                    style: TextStyle(
+                                        fontSize: Dimensions.font16,
+                                        color: Colors.green))
+                                : withdrawList.withdrawList[index].status == "2"
+                                    ? TextSpan(
+                                        text: "Rejected",
+                                        style: TextStyle(
+                                            fontSize: Dimensions.font16,
+                                            color: Colors.red))
+                                    : TextSpan(
+                                        text: "Pending",
+                                        style: TextStyle(
+                                            fontSize: Dimensions.font16,
+                                            color: Colors.orange),
+                                      )
                           ],
+                          //  withdrawList.withdrawList[index].status.toString()=="2"?ButtonWidget(
+                          //                                       onClicked: () {},
+                          //                                       text: "Approved"):
                         ),
                         style: TextStyle(height: 2.0),
                       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:service_provider/pages/auth/otp_register.dart';
+
 class StarterPage extends StatelessWidget {
   const StarterPage({Key? key}) : super(key: key);
 
@@ -62,12 +63,14 @@ class StarterPage extends StatelessWidget {
                     color: Color(0xff0095FF),
                     // defining the shape
                     shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.black),
+                        side: BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(50)),
                     child: Text(
                       "Get Started",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: Colors.white),
                     ),
                   ),
                   // creating the signup button

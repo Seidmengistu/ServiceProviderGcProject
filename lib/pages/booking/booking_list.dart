@@ -1,16 +1,24 @@
+// ignore_for_file: deprecated_member_use
+
+import 'package:dio/dio.dart' as Dio;
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import 'package:service_provider/base/custom_loader.dart';
-import 'package:service_provider/base/show_custom_snackbar.dart';
+
 import 'package:service_provider/controllers/booking/booking_controller.dart';
 import 'package:service_provider/utils/app_constants.dart';
 
 import 'package:service_provider/utils/dimensions.dart';
 import 'package:service_provider/widgets/big_text.dart';
-import 'package:service_provider/widgets/icon_and_text_widget.dart';
-import 'package:service_provider/widgets/small_text.dart';
+
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:service_provider/widgets/button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BookingList extends StatefulWidget {
   @override
@@ -18,6 +26,65 @@ class BookingList extends StatefulWidget {
 }
 
 class _BookingList extends State<BookingList> {
+  String _scanBarcode = '';
+
+  Future<void> scanBarcodeNormal(String fromscanner) async {
+    String barcodeScanRes;
+    String id = fromscanner;
+    print("id" + id);
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.QR);
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _scanBarcode = barcodeScanRes;
+    });
+    if (!_scanBarcode.isEmpty) {
+      sendScanData(id);
+    }
+  }
+
+  Future<void> sendScanData(String id) async {
+    String token = '';
+    SharedPreferences pre = await SharedPreferences.getInstance();
+    token = pre.getString(AppConstants.TOKEN) ?? "None token";
+    final String endPoint =
+        "https://gcproject.awraticket.com/service_provider/approve_service/" +
+            id;
+    String code = _scanBarcode;
+   
+    Dio.Dio dio = new Dio.Dio();
+    Dio.FormData formData = new Dio.FormData.fromMap({
+      "approval_token": code,
+    });
+
+    dio.options.headers["Authorization"] = "Bearer $token";
+    dio.post(endPoint, data: formData).then((response) {
+      print(response.data);
+      if (response.statusCode == 200) {
+        EasyLoading.dismiss();
+
+        Get.find<BookingController>().getgeneralAllBookingList();
+        Get.snackbar(
+          "Success",
+          "Completed Successfully",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 3),
+          margin: EdgeInsets.all(15),
+          forwardAnimationCurve: Curves.bounceOut,
+        );
+      } else {
+        EasyLoading.dismiss();
+      }
+      // ignore: invalid_return_type_for_catch_error
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Get.find<BookingController>().gettodayToBeDoneBookingList();
@@ -357,6 +424,33 @@ class _BookingList extends State<BookingList> {
                                                   ],
                                                 ),
                                               ),
+                                              Container(
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      "Price : ",
+                                                      style: TextStyle(
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: Dimensions.width20,
+                                                    ),
+                                                    Text(
+                                                      todayToBeDone
+                                                          .todayToBeDoneBookingList[
+                                                              index]
+                                                          .service
+                                                          .name,
+                                                      style: TextStyle(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                               SizedBox(
                                                 height: Dimensions.height10,
                                               ),
@@ -570,6 +664,7 @@ class _BookingList extends State<BookingList> {
                     //   Icons.data_saver_on,
                     //   color: Colors.green,
                     // ),
+
                     child: Text(
                       'General All',
                       style: TextStyle(
@@ -613,7 +708,7 @@ class _BookingList extends State<BookingList> {
           ),
         ),
         body: TabBarView(
-          children: <Widget>[
+          children: [
             Container(
               height: MediaQuery.of(context).size.height - 185.0,
               decoration: BoxDecoration(
@@ -631,71 +726,69 @@ class _BookingList extends State<BookingList> {
                         shrinkWrap: true,
                         itemCount: generalAll.generalAllBookingList.length,
                         itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              // Get.toNamed(RouteHelper.getRecomendedFood(index));
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  top: Dimensions.height50,
-                                  left: Dimensions.width20,
-                                  right: Dimensions.width20,
-                                  bottom: Dimensions.height10),
-                              child: Row(
-                                children: [
-                                  //image section
-                                  GestureDetector(
-                                      onTap: () {
-                                        // Get.toNamed(
-                                        //     RouteHelper.getPopularService(
-                                        //         index));
-                                      },
-                                      child: CircleAvatar(
-                                        radius: Dimensions.radius30 * 2,
-                                        backgroundImage: NetworkImage(generalAll
-                                            .generalAllBookingList[index]
-                                            .user
-                                            .profilePicture),
-                                      )),
-                                  //TExT container
-
-                                  Expanded(
-                                    // to allow the width to take all the available width
-
-                                    child: Container(
-                                      height: Dimensions.ListViewTextSize,
-                                      // decoration: BoxDecoration(
-                                      //     color: Colors.white,
-                                      //     borderRadius: BorderRadius.circular(
-                                      //         Dimensions.radius20),
-                                      //     boxShadow: [
-                                      //       BoxShadow(
-                                      //           blurRadius: 10,
-                                      //           spreadRadius: 7,
-                                      //           offset: Offset(1, 5),
-                                      //           color: Colors.blue
-                                      //               .withOpacity(0.2))
-                                      //     ]),
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            left: Dimensions.width10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            BigText(
-                                              text: generalAll
+                          return Container(
+                            height: Dimensions.height30 * 5,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.circular(Dimensions.radius30),
+                                boxShadow: [
+                                  BoxShadow(
+                                      blurRadius: 23,
+                                      spreadRadius: 7,
+                                      offset: Offset(1, 10),
+                                      color: Colors.grey.withOpacity(0.2))
+                                ]),
+                            margin: EdgeInsets.only(
+                                top: Dimensions.height50,
+                                left: Dimensions.width20,
+                                right: Dimensions.width20,
+                                bottom: Dimensions.height10),
+                            child: Wrap(
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          left: Dimensions.width10),
+                                      child: Center(
+                                        child: CircleAvatar(
+                                          radius: Dimensions.radius30,
+                                          backgroundImage: NetworkImage(
+                                              generalAll
                                                   .generalAllBookingList[index]
                                                   .user
-                                                  .name,
-                                            ),
-                                            SizedBox(
-                                              height: Dimensions.height10,
-                                            ),
-                                            Container(
-                                              child: Row(
+                                                  .profilePicture),
+                                        ),
+                                      ),
+                                    ),
+                                    //TExT container
+
+                                    Expanded(
+                                      // to allow the width to take all the available width
+
+                                      child: Container(
+                                        height: Dimensions.height50 * 3,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: Dimensions.width10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              BigText(
+                                                text: generalAll
+                                                    .generalAllBookingList[
+                                                        index]
+                                                    .user
+                                                    .name,
+                                              ),
+                                              SizedBox(
+                                                height: Dimensions.height10,
+                                              ),
+                                              Row(
                                                 children: [
                                                   Text(
                                                     "Service Type : ",
@@ -704,7 +797,7 @@ class _BookingList extends State<BookingList> {
                                                     ),
                                                   ),
                                                   SizedBox(
-                                                    width: Dimensions.width20,
+                                                    width: Dimensions.width10,
                                                   ),
                                                   Text(
                                                     generalAll
@@ -718,35 +811,111 @@ class _BookingList extends State<BookingList> {
                                                   ),
                                                 ],
                                               ),
-                                            ),
-                                            SizedBox(
-                                              height: Dimensions.height10,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Icon(
-                                                  Icons.calendar_today_rounded,
-                                                  color: Colors.blue,
-                                                  size: Dimensions.font16,
-                                                ),
-                                                SizedBox(
-                                                    width: Dimensions.width10),
-                                                Text(f.format(generalAll
-                                                    .generalAllBookingList[
-                                                        index]
-                                                    .user
-                                                    .createdAt))
-                                              ],
-                                            ),
-                                          ],
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "Price : ",
+                                                    style: TextStyle(
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                  ),
+                                                  // SizedBox(
+                                                  //   width: Dimensions
+                                                  //       .width10,
+                                                  // ),
+                                                  Text(
+                                                    generalAll
+                                                        .generalAllBookingList[
+                                                            index]
+                                                        .service
+                                                        .price,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        Dimensions.width20 * 7,
+                                                  ),
+                                                  Container(
+                                                    child: Row(
+                                                      children: [
+                                                        // GestureDetector(
+                                                        //   onTap: () {
+                                                        //     print(generalAll
+                                                        //         .generalAllBookingList[
+                                                        //             index]
+                                                        //         .status);
+                                                        //   },
+                                                        // ),
+                                                        generalAll
+                                                                    .generalAllBookingList[
+                                                                        index]
+                                                                    .status
+                                                                    .toString() ==
+                                                                "1"
+                                                            ? ButtonWidget(
+                                                                onClicked: () {
+                                                                  Get.to(
+                                                                    scanBarcodeNormal(generalAll
+                                                                        .generalAllBookingList[
+                                                                            index]
+                                                                        .id),
+                                                                  );
+                                                                  EasyLoading.show(status: "Verifying...");
+                                                                },
+                                                                text: "Scan")
+                                                            : Container(
+                                                                margin: EdgeInsets.only(
+                                                                    top: Dimensions
+                                                                        .height10),
+                                                                child:
+                                                                    ButtonWidget(
+                                                                  text:
+                                                                      "Completed",
+                                                                  onClicked:
+                                                                      () {},
+                                                                ),
+                                                              )
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Icon(
+                                                    Icons
+                                                        .calendar_today_rounded,
+                                                    color: Colors.blue,
+                                                    size: Dimensions.font16,
+                                                  ),
+                                                  SizedBox(
+                                                      width:
+                                                          Dimensions.width10),
+                                                  Text(
+                                                    f.format(generalAll
+                                                        .generalAllBookingList[
+                                                            index]
+                                                        .user
+                                                        .createdAt),
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        Dimensions.width20 * 5,
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                ],
-                              ),
+                                    )
+                                  ],
+                                ),
+                              ],
                             ),
                           );
                         })

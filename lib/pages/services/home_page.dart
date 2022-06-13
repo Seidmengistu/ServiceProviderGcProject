@@ -51,7 +51,7 @@ class _HomePageState extends State<SHomePage> {
             fontFamily: 'TiroKannada',
             fontWeight: FontWeight.bold,
             letterSpacing: 1),
-        activeColorPrimary: CupertinoColors.white,
+        activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.black,
       ),
       PersistentBottomNavBarItem(
@@ -62,7 +62,7 @@ class _HomePageState extends State<SHomePage> {
             fontFamily: 'TiroKannada',
             fontWeight: FontWeight.bold,
             letterSpacing: 1),
-        activeColorPrimary: CupertinoColors.white,
+        activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.black,
       ),
       PersistentBottomNavBarItem(
@@ -73,7 +73,7 @@ class _HomePageState extends State<SHomePage> {
             fontFamily: 'TiroKannada',
             fontWeight: FontWeight.bold,
             letterSpacing: 1),
-        activeColorPrimary: CupertinoColors.white,
+        activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.black,
       ),
       PersistentBottomNavBarItem(
@@ -84,7 +84,7 @@ class _HomePageState extends State<SHomePage> {
             fontFamily: 'TiroKannada',
             fontWeight: FontWeight.bold,
             letterSpacing: 1),
-        activeColorPrimary: CupertinoColors.white,
+        activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.black,
       ),
       PersistentBottomNavBarItem(
@@ -95,7 +95,7 @@ class _HomePageState extends State<SHomePage> {
             fontFamily: 'TiroKannada',
             fontWeight: FontWeight.bold,
             letterSpacing: 1),
-        activeColorPrimary: CupertinoColors.white,
+        activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.black,
       ),
     ];
@@ -109,8 +109,8 @@ class _HomePageState extends State<SHomePage> {
       screens: _buildScreens(),
       items: _navBarsItems(),
       confineInSafeArea: true,
-      
-      backgroundColor: Colors.blue, // Default is Colors.white.
+
+      backgroundColor: Colors.white, // Default is Colors. .
       handleAndroidBackButtonPress: false, // Default is true.
       resizeToAvoidBottomInset:
           true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.

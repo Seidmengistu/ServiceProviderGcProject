@@ -2,7 +2,7 @@ class DashboardModel {
   String rate;
   int? totalBooking;
   int? todayTotalBooking;
-  double totalBalance;
+  int totalBalance;
 
   DashboardModel(
       {required this.rate,
@@ -15,7 +15,7 @@ class DashboardModel {
       rate: double.tryParse(json['rate']).toString(),
       todayTotalBooking: json['today_total_booking'],
       totalBooking: json['total_booking'],
-      totalBalance: json['total_balance'],
+      totalBalance: json['total_balance'] == 0.0 ? "" : json['total_balance'],
 
       // json['total_balance'] == null
       //       ? 0.0
